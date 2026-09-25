@@ -1,0 +1,31 @@
+cat > .gitignore <<'EOF'
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Datasets
+datasets/
+
+# Large ML files
+*.csv
+*.pkl
+*.pickle
+*.pt
+*.pth
+*.h5
+*.keras
+*.onnx
+
+# Environment/secrets
+.env
+
+# IDE
+.vscode/
+.idea/
+
+# Jupyter
+.ipynb_checkpoints/
+EOF
