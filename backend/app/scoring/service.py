@@ -1,42 +1,62 @@
-from typing import Protocol, Sequence
-from uuid import UUID
+from datetime import datetime
 
-from .contracts import (
-    ScoreDomain,
-    ScoreEvent,
-    ScoreEventInput,
-    ScoreHistoryQuery,
-    ScoreSnapshot,
-    ScoreSubjectType,
-)
+from .contracts import CyberScore, ScoreEvent
 
 
-class ScoreService(Protocol):
+class ScoreService:
+    def __init__(self):
+        self._scores: dict[str, int] = {}
+        self._history: dict[str, list[ScoreEvent]] = {}
+
+    def get_current_score(self, user_id: str) -> CyberScore:
+        score = self._scores.get(user_id, 50)
+
+        return CyberScore(
+            user_id=user_id,
+            score=score,
+            timestamp=datetime.utcnow(),
+        )
+
     def calculate_score(
         self,
-        current_score: float,
+        current_score: int,
         *,
         threat_detected: bool,
-    ) -> float:
-        """Calculate a score according to the agreed scoring version."""
-        ...
+    ) -> int:
+        change = -1 if threat_detected else 1
 
-    def record_score_event(self, event: ScoreEventInput) -> ScoreEvent:
-        """Record a score change and return its history event."""
-        ...
+        return max(0, min(100, current_score + change))
 
-    def get_current_score(
+    def record_score_event(
         self,
+        user_id: str,
         *,
-        context_id: UUID,
-        subject_type: ScoreSubjectType,
-        subject_id: UUID,
-        domain: ScoreDomain,
-    ) -> ScoreSnapshot | None:
-        ...
+        threat_detected: bool,
+        reason: str,
+    ) -> ScoreEvent:
+        current = self._scores.get(user_id, 50)
 
-    def get_score_history(
-        self,
-        query: ScoreHistoryQuery,
-    ) -> Sequence[ScoreEvent]:
-        ...
+        new_score = self.calculate_score(
+            current,
+            threat_detected=threat_detected,
+        )
+
+        change = new_score - current
+
+        event = ScoreEvent(
+            user_id=user_id,
+            change=change,
+            reason=reason,
+            timestamp=datetime.utcnow(),
+        )
+
+        self._scores[user_id] = new_score
+        self._history.setdefault(user_id, []).append(event)
+
+        return event
+
+    def get_score_history(self, user_id: str) -> list[ScoreEvent]:
+        return list(self._history.get(user_id, []))
+
+
+score_service = ScoreService()
