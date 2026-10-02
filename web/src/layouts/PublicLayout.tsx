@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 interface PublicLayoutProps {
   children: ReactNode;
@@ -6,18 +8,14 @@ interface PublicLayoutProps {
 
 export default function PublicLayout({ children }: PublicLayoutProps) {
   return (
-    <div className="min-h-screen">
-      <header>
-        <nav>
-          <strong>CyberGuard</strong>
-        </nav>
-      </header>
+    <div className="public-layout">
+      <Header />
 
-      <main>{children}</main>
+      <main className="public-main">
+        {children}
+      </main>
 
-      <footer>
-        <p>CyberGuard</p>
-      </footer>
+      <Footer />
     </div>
   );
 }

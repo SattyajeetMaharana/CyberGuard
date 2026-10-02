@@ -1,4 +1,8 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import { NavLink } from "react-router-dom";
+
+import Sidebar from "../components/Sidebar";
+import ThemeToggle from "../components/ThemeToggle";
 
 interface AuthenticatedLayoutProps {
   children: ReactNode;
@@ -7,28 +11,68 @@ interface AuthenticatedLayoutProps {
 export default function AuthenticatedLayout({
   children,
 }: AuthenticatedLayoutProps) {
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+
   return (
-    <div className="min-h-screen">
-      <aside>
-        <nav>
-          <strong>CyberGuard</strong>
+    <div className="authenticated-layout">
+      <Sidebar />
 
-          <ul>
-            <li>Dashboard</li>
-            <li>Threat Center</li>
-            <li>Incidents</li>
-            <li>Cyber Score</li>
-          </ul>
-        </nav>
-      </aside>
+      <div className="authenticated-content">
+        <header className="organization-topbar">
+          <div className="topbar-left">
+            <button
+              type="button"
+              className="mobile-menu-button"
+              onClick={() => setMobileSidebarOpen(true)}
+              aria-label="Open navigation"
+              aria-expanded={mobileSidebarOpen}
+            >
+              <span />
+              <span />
+              <span />
+            </button>
 
-      <section>
-        <header>
-          <p>Organization Portal</p>
+            <div className="organization-heading">
+              <span className="organization-heading-label">
+                Organization Portal
+              </span>
+
+              <span className="organization-heading-divider">/</span>
+
+              <span className="organization-heading-current">
+                Dashboard
+              </span>
+            </div>
+          </div>
+
+          <div className="topbar-actions">
+            <ThemeToggle />
+
+            <NavLink to="/settings" className="topbar-settings">
+              Settings
+            </NavLink>
+          </div>
         </header>
 
-        <main>{children}</main>
-      </section>
+        <main className="authenticated-main">{children}</main>
+      </div>
+
+      <button
+        type="button"
+        className={`mobile-sidebar-overlay ${
+          mobileSidebarOpen ? "visible" : ""
+        }`}
+        onClick={() => setMobileSidebarOpen(false)}
+        aria-label="Close navigation"
+      />
+
+      <div
+        className={`mobile-sidebar ${
+          mobileSidebarOpen ? "open" : ""
+        }`}
+      >
+        <Sidebar />
+      </div>
     </div>
   );
 }

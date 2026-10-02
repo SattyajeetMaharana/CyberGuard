@@ -1,11 +1,48 @@
-interface HeaderProps {
-  title?: string;
-}
+import { NavLink } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle";
 
-export default function Header({ title = "CyberGuard" }: HeaderProps) {
+const navigation = [
+  { label: "Home", path: "/" },
+  { label: "Features", path: "/features" },
+  { label: "How It Works", path: "/how-it-works" },
+  { label: "Download", path: "/download" },
+];
+
+export default function Header() {
   return (
-    <header>
-      <h1>{title}</h1>
+    <header className="site-header">
+      <div className="header-container">
+        <NavLink to="/" className="brand">
+          <span className="brand-mark">C</span>
+          <span className="brand-name">CyberGuard</span>
+        </NavLink>
+
+        <nav className="desktop-nav" aria-label="Main navigation">
+          {navigation.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "active" : ""}`
+              }
+            >
+              {item.label}
+            </NavLink>
+          ))}
+        </nav>
+
+        <div className="header-actions">
+          <ThemeToggle />
+
+          <NavLink to="/login" className="login-link">
+            Login
+          </NavLink>
+
+          <NavLink to="/register" className="register-button">
+            Register
+          </NavLink>
+        </div>
+      </div>
     </header>
   );
 }
