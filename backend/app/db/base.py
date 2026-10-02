@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Any
 
 from sqlalchemy import MetaData
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
@@ -35,5 +34,3 @@ class TimestampMixin:
         server_default="CURRENT_TIMESTAMP",
         onupdate=datetime.utcnow,
     )
-    from app.db.models.user import User
-from app.db.models.credential import Credential
