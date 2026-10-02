@@ -35,3 +35,5 @@ class TimestampMixin:
         server_default="CURRENT_TIMESTAMP",
         onupdate=datetime.utcnow,
     )
+    from app.db.models.user import User
+from app.db.models.credential import Credential

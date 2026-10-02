@@ -11,3 +11,5 @@ async def root():
 @app.get("/health")
 async def health():
     return {"status": "healthy"}
+from app.api.v1.router import api_router
+app.include_router(api_router, prefix="/api/v1")
