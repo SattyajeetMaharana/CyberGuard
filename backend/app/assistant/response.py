@@ -1,59 +1,88 @@
 from __future__ import annotations
 
-from uuid import UUID
+from uuid import UUID, uuid4
 
-from .contracts import ApprovalRequest, AssistantContext
-
+from app.assistant.contracts import ApprovalRequest, AssistantContext
+from app.assistant.notifications import notify_response_approval_required
 from app.orchestration.service import (
-    ResponseAction as OrchestrationResponseAction,
-    response_approval_service,
+    ResponseAction,
+    ResponseApprovalService,
+    ResponseState,
     audit_service,
 )
 
 
-def create_approval_request(
-    *,
-    incident_id: str,
-    context: AssistantContext,
-    action: str,
-    reason: str,
-) -> tuple[OrchestrationResponseAction, ApprovalRequest]:
+response_approval_service = ResponseApprovalService()
 
-    response = OrchestrationResponseAction(
-        id=UUID(incident_id),
-        category=context.category,
+
+def create_approval_request(
+    incident_id: str,
+    context: AssistantContext | None = None,
+    action: str = "",
+    reason: str = "",
+    category: str | None = None,
+    target: str | None = None,
+) -> tuple[ResponseAction, ApprovalRequest]:
+    if context is not None:
+        resolved_category = context.category
+    elif category is not None:
+        resolved_category = category
+    else:
+        resolved_category = "assistant_response"
+
+    response = ResponseAction(
+        id=uuid4(),
+        category=resolved_category,
         actions=[action],
-        target=incident_id,
+        target=target,
         reason=reason,
     )
 
-    # Submit to the EXISTING Phase 3 approval workflow.
+    # Recommendation -> Approval Required
     response_approval_service.submit_for_review(response)
 
-    request = ApprovalRequest(
-        response_id=str(response.id),
-        incident_id=context.incident_id,
+    notify_response_approval_required(
+        incident_id=incident_id,
+        category=resolved_category,
         action=action,
         reason=reason,
-        state=response.state.value,
     )
 
     audit_service.record(
         actor="assistant",
         action="RESPONSE_APPROVAL_REQUESTED",
-        target=context.incident_id,
+        target=incident_id,
         reason=reason,
-        outcome=response.state.value,
+        outcome="APPROVAL_REQUIRED",
+    )
+
+    request = ApprovalRequest(
+        response_id=str(response.id),
+        incident_id=incident_id,
+        action=action,
+        reason=reason,
+        state=response.state.value,
     )
 
     return response, request
 
 
 def approve_response(
-    response: OrchestrationResponseAction,
-    *,
-    approver: str,
-) -> OrchestrationResponseAction:
+    response: ResponseAction,
+    approver: str = "authorized_user",
+    reason: str = "Approved by authorized user",
+) -> str:
+    """
+    Move an existing response from ADMIN_REVIEW to APPROVED.
+
+    The existing ResponseAction object is intentionally used so the
+    approval workflow cannot be bypassed by creating a new response.
+    """
+    if response.state != ResponseState.ADMIN_REVIEW:
+        raise ValueError(
+            f"Response must be in ADMIN_REVIEW before approval; "
+            f"current state is {response.state.value}"
+        )
 
     response_approval_service.approve(response)
 
@@ -61,18 +90,28 @@ def approve_response(
         actor=approver,
         action="RESPONSE_APPROVED",
         target=str(response.id),
-        reason=response.reason or "Assistant recommendation approved.",
-        outcome=response.state.value,
+        reason=reason,
+        outcome="APPROVED",
     )
 
-    return response
+    return response.state.value
 
 
 def execute_response(
-    response: OrchestrationResponseAction,
-    *,
-    executor: str,
-) -> OrchestrationResponseAction:
+    response: ResponseAction,
+    executor: str = "response_executor",
+    reason: str = "Approved response executed",
+) -> str:
+    """
+    Execute an existing response only after it has been approved.
+
+    Direct execution of a recommended/admin-review response is rejected.
+    """
+    if response.state != ResponseState.APPROVED:
+        raise ValueError(
+            f"Response must be APPROVED before execution; "
+            f"current state is {response.state.value}"
+        )
 
     response_approval_service.execute(response)
 
@@ -80,8 +119,16 @@ def execute_response(
         actor=executor,
         action="RESPONSE_EXECUTED",
         target=str(response.id),
-        reason=response.reason or "Approved response executed.",
-        outcome=response.state.value,
+        reason=reason,
+        outcome="EXECUTED",
     )
 
-    return response
+    audit_service.record(
+        actor=executor,
+        action="RESPONSE_OUTCOME",
+        target=str(response.id),
+        reason=reason,
+        outcome="SUCCESS",
+    )
+
+    return response.state.value

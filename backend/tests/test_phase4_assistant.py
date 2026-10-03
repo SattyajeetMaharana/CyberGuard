@@ -285,3 +285,74 @@ def test_malformed_detection_values_are_rejected():
             risk_score=-1,
             confidence=0.5,
         )
+
+def test_response_approval_uses_separate_response_id():
+    from app.assistant.response import create_approval_request
+
+    _, request = create_approval_request(
+        incident_id="INC-2026-001",
+        category="account_takeover",
+        action="revoke_session",
+        reason="Suspicious session detected",
+    )
+
+    assert request.incident_id == "INC-2026-001"
+    assert request.response_id != request.incident_id
+
+
+def test_conversation_redacts_password():
+    from app.assistant.conversations import AssistantConversationService
+
+    service = AssistantConversationService()
+
+    conversation = service.create_conversation(
+        "Account takeover investigation"
+    )
+
+    message = service.add_message(
+        conversation.id,
+        "user",
+        "password=SuperSecret123",
+    )
+
+    assert "SuperSecret123" not in message.content
+    assert "[REDACTED]" in message.content
+
+
+def test_conversation_redacts_api_key():
+    from app.assistant.conversations import AssistantConversationService
+
+    service = AssistantConversationService()
+
+    conversation = service.create_conversation(
+        "Phishing investigation"
+    )
+
+    message = service.add_message(
+        conversation.id,
+        "user",
+        "api_key=abc123",
+    )
+
+    assert "abc123" not in message.content
+    assert "[REDACTED]" in message.content
+
+
+def test_invalid_conversation_role_is_rejected():
+    from app.assistant.conversations import AssistantConversationService
+
+    service = AssistantConversationService()
+
+    conversation = service.create_conversation(
+        "Phishing investigation"
+    )
+
+    try:
+        service.add_message(
+            conversation.id,
+            "attacker",
+            "test",
+        )
+        assert False, "Invalid role should have raised ValueError"
+    except ValueError:
+        pass

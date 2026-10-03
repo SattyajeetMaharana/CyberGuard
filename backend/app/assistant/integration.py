@@ -1,26 +1,22 @@
 from __future__ import annotations
 
-from typing import Any, Mapping, Sequence
-
-from .context import build_context
-from .contracts import AssistantContext, AssistantResponse
-from .service import assistant_service
-from .response import create_approval_request
+from app.assistant.context import build_context
+from app.assistant.contracts import AssistantResponse
+from app.assistant.service import assistant_service
+from app.orchestration.service import audit_service
 
 
 def assist_with_threat(
-    *,
     incident_id: str,
     category: str,
     risk_score: float,
     confidence: float,
-    explanation: str = "",
-    indicators: Sequence[str] | None = None,
+    explanation: str,
+    indicators: tuple[str, ...] = (),
     incident_status: str = "UNKNOWN",
-    recommended_actions: Sequence[str] | None = None,
-    security_context: Mapping[str, Any] | None = None,
-) -> tuple[AssistantContext, AssistantResponse]:
-
+    recommended_actions: tuple[str, ...] = (),
+    security_context: dict | None = None,
+) -> AssistantResponse:
     context = build_context(
         incident_id=incident_id,
         category=category,
@@ -30,23 +26,25 @@ def assist_with_threat(
         indicators=indicators,
         incident_status=incident_status,
         recommended_actions=recommended_actions,
-        security_context=security_context,
+        security_context=security_context or {},
+    )
+
+    audit_service.record(
+        actor="assistant",
+        action="ASSISTANT_INVOCATION",
+        target=incident_id,
+        reason=f"Threat category: {context.category}",
+        outcome="CONTEXT_BUILT",
     )
 
     response = assistant_service.respond(context)
 
-    return context, response
-
-
-def recommend_approval(
-    *,
-    context: AssistantContext,
-    action: str,
-    reason: str,
-):
-    return create_approval_request(
-        incident_id=context.incident_id,
-        context=context,
-        action=action,
-        reason=reason,
+    audit_service.record(
+        actor="assistant",
+        action="ASSISTANT_RECOMMENDATION",
+        target=incident_id,
+        reason=response.message,
+        outcome="RECOMMENDATION_CREATED",
     )
+
+    return response
