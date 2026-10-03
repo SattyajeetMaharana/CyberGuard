@@ -1,0 +1,25 @@
+name: account_takeover_response
+version: "1.0"
+
+threat_category: account_takeover
+
+actions:
+  - id: review_sessions
+    action: revoke_session
+    description: Review and revoke suspicious active sessions.
+    approval_required: true
+
+  - id: suspend_device
+    action: suspend_device
+    description: Temporarily suspend a suspicious device after review.
+    approval_required: true
+
+  - id: password_reset
+    action: require_password_reset
+    description: Require a password reset after account-security review.
+    approval_required: true
+
+  - id: notify_admin
+    action: notify_admin
+    description: Notify the security administrator.
+    approval_required: true
