@@ -41,38 +41,54 @@ export default function Features() {
   return (
     <div className="features-page">
       <section className="features-hero">
-        <span className="home-eyebrow">CYBERGUARD PLATFORM</span>
+        <div className="features-hero-content">
+          <span className="home-eyebrow">CYBERGUARD PLATFORM</span>
 
-        <h1>
-          Everything your organization needs
-          <span> to understand its security.</span>
-        </h1>
+          <h1>
+            Everything your organization needs
+            <span> to understand its security.</span>
+          </h1>
 
-        <p>
-          CyberGuard brings detection, monitoring, analysis, and organization
-          management together in a unified cybersecurity workspace.
-        </p>
+          <p>
+            CyberGuard brings detection, monitoring, analysis, and organization
+            management together in a unified cybersecurity workspace.
+          </p>
+        </div>
+
+        <div className="features-hero-marker" aria-hidden="true">
+          <span>06</span>
+          <small>CORE CAPABILITIES</small>
+        </div>
       </section>
 
       <section className="features-list-section">
         <div className="features-section-heading">
-          <span className="home-eyebrow">CAPABILITIES</span>
-          <h2>Built around your organization's security workflow.</h2>
+          <div>
+            <span className="home-eyebrow">CAPABILITIES</span>
+            <h2>Built around your organization's security workflow.</h2>
+          </div>
+
+          <span className="features-heading-index">/ 06</span>
         </div>
 
         <div className="features-grid">
           {features.map((feature) => (
             <article className="feature-card" key={feature.number}>
-              <span className="feature-number">{feature.number}</span>
+              <div className="feature-card-top">
+                <span className="feature-number">{feature.number}</span>
+
+                <span className="feature-arrow" aria-hidden="true">
+                  ↗
+                </span>
+              </div>
 
               <div className="feature-card-content">
                 <h3>{feature.title}</h3>
+
                 <p>{feature.description}</p>
               </div>
 
-              <span className="feature-arrow" aria-hidden="true">
-                →
-              </span>
+              <div className="feature-card-line" aria-hidden="true" />
             </article>
           ))}
         </div>
@@ -80,17 +96,24 @@ export default function Features() {
 
       <section className="features-bottom">
         <div className="features-bottom-panel">
-          <span className="home-eyebrow">ONE PLATFORM</span>
+          <div className="features-bottom-content">
+            <span className="home-eyebrow">ONE PLATFORM</span>
 
-          <h2>
-            From detection
-            <span> to response.</span>
-          </h2>
+            <h2>
+              From detection
+              <span> to response.</span>
+            </h2>
 
-          <p>
-            Connect security information across your organization and create
-            one consistent view of your cybersecurity environment.
-          </p>
+            <p>
+              Connect security information across your organization and create
+              one consistent view of your cybersecurity environment.
+            </p>
+          </div>
+
+          <div className="features-bottom-index" aria-hidden="true">
+            <span>CG</span>
+            <strong>01</strong>
+          </div>
         </div>
       </section>
     </div>

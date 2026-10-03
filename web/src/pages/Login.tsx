@@ -1,97 +1,276 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [isEntering, setIsEntering] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      document.body.classList.remove("auth-transition-active");
+    };
+  }, []);
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    if (isEntering) {
+      return;
+    }
+
+    setIsEntering(true);
+    document.body.classList.add("auth-transition-active");
+
+    window.setTimeout(() => {
+      navigate("/dashboard", {
+        state: {
+          fromLogin: true,
+        },
+      });
+    }, 850);
   };
 
   return (
-    <div className="auth-page">
-      <div className="auth-container">
-        <section className="auth-intro">
-          <span className="home-eyebrow">CYBERGUARD ORGANIZATION</span>
+    <>
+      <div className={`auth-page ${isEntering ? "auth-page-transitioning" : ""}`}>
+        <div className="auth-container">
+          <section className="auth-intro">
+            <div className="auth-intro-top">
+              <span className="home-eyebrow">
+                CYBERGUARD ORGANIZATION
+              </span>
 
-          <h1>
-            Welcome
-            <span> back.</span>
-          </h1>
+              <span className="auth-system-status">
+                <span className="auth-status-dot" />
+                SYSTEM ONLINE
+              </span>
+            </div>
 
-          <p>
-            Sign in to access your organization's cybersecurity workspace,
-            monitor threats, and manage your security environment.
-          </p>
+            <div className="auth-intro-main">
+              <span className="auth-index">/ 01</span>
 
-          <div className="auth-intro-line">
-            <span />
-            <span />
-            <span />
-          </div>
-        </section>
+              <h1>
+                Welcome
+                <span>back.</span>
+              </h1>
 
-        <section className="auth-card">
-          <div className="auth-card-heading">
-            <span className="auth-card-label">SECURE ACCESS</span>
+              <p>
+                Sign in to access your organization's cybersecurity workspace,
+                monitor threats, and manage your security environment.
+              </p>
+            </div>
 
-            <h2>Sign in</h2>
+            <div className="auth-intro-line">
+              <span />
+              <span />
+              <span />
+            </div>
 
-            <p>Enter your organization credentials to continue.</p>
-          </div>
+            <div className="auth-security-info">
+              <div>
+                <span>ACCESS LEVEL</span>
+                <strong>ORGANIZATION</strong>
+              </div>
 
-          <form className="auth-form" onSubmit={handleSubmit}>
-            <label htmlFor="login-email">
-              Organization email
-            </label>
+              <div>
+                <span>SECURITY</span>
+                <strong>PROTECTED</strong>
+              </div>
+            </div>
+          </section>
 
-            <input
-              id="login-email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              placeholder="you@organization.com"
-              autoComplete="email"
-              required
-            />
+          <section className="auth-card">
+            <div className="auth-card-heading">
+              <div className="auth-card-topline">
+                <span className="auth-card-label">
+                  SECURE ACCESS
+                </span>
 
-            <label htmlFor="login-password">
-              Password
-            </label>
+                <span className="auth-card-number">
+                  CG-AUTH
+                </span>
+              </div>
 
-            <input
-              id="login-password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              placeholder="Enter your password"
-              autoComplete="current-password"
-              required
-            />
+              <h2>
+                {isEntering ? "Entering workspace" : "Sign in"}
+              </h2>
 
-            <button type="submit" className="button button-primary auth-submit">
-              Sign In
-            </button>
-          </form>
+              <p>
+                {isEntering
+                  ? "Preparing your secure organization workspace."
+                  : "Enter your organization credentials to continue."}
+              </p>
+            </div>
 
-          <div className="auth-divider">
-            <span />
-            <span>OR</span>
-            <span />
-          </div>
+            <form
+              className={`auth-form ${
+                isEntering ? "auth-form-disabled" : ""
+              }`}
+              onSubmit={handleSubmit}
+            >
+              <div className="auth-field">
+                <label htmlFor="login-email">
+                  Organization email
+                </label>
 
-          <p className="auth-register-text">
-            Don't have an organization account?{" "}
-            <NavLink to="/register">Create one</NavLink>
-          </p>
+                <div className="auth-input-wrapper">
+                  <span className="auth-input-index">
+                    01
+                  </span>
 
-          <NavLink to="/" className="auth-back-link">
-            ← Back to CyberGuard
-          </NavLink>
-        </section>
+                  <input
+                    id="login-email"
+                    type="email"
+                    value={email}
+                    onChange={(event) =>
+                      setEmail(event.target.value)
+                    }
+                    placeholder="you@organization.com"
+                    autoComplete="email"
+                    disabled={isEntering}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="auth-field">
+                <label htmlFor="login-password">
+                  Password
+                </label>
+
+                <div className="auth-input-wrapper">
+                  <span className="auth-input-index">
+                    02
+                  </span>
+
+                  <input
+                    id="login-password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(event) =>
+                      setPassword(event.target.value)
+                    }
+                    placeholder="Enter your password"
+                    autoComplete="current-password"
+                    disabled={isEntering}
+                    required
+                  />
+
+                  <button
+                    type="button"
+                    className="auth-password-toggle"
+                    onClick={() =>
+                      setShowPassword((current) => !current)
+                    }
+                    aria-label={
+                      showPassword
+                        ? "Hide password"
+                        : "Show password"
+                    }
+                    disabled={isEntering}
+                  >
+                    {showPassword ? "HIDE" : "SHOW"}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                className={`button button-primary auth-submit ${
+                  isEntering ? "auth-submit-loading" : ""
+                }`}
+                disabled={isEntering}
+              >
+                {isEntering ? (
+                  <>
+                    <span className="auth-submit-loader" />
+                    <span>Entering Workspace</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Sign In</span>
+                    <span aria-hidden="true">↗</span>
+                  </>
+                )}
+              </button>
+            </form>
+
+            {!isEntering && (
+              <>
+                <div className="auth-divider">
+                  <span />
+                  <span>OR</span>
+                  <span />
+                </div>
+
+                <p className="auth-register-text">
+                  Don't have an organization account?{" "}
+                  <NavLink to="/register">
+                    Create one
+                  </NavLink>
+                </p>
+
+                <NavLink
+                  to="/"
+                  className="auth-back-link"
+                >
+                  <span aria-hidden="true">←</span>
+                  Back to CyberGuard
+                </NavLink>
+              </>
+            )}
+
+            {isEntering && (
+              <div className="auth-transition-status">
+                <div className="auth-transition-status-line">
+                  <span className="auth-transition-pulse" />
+                  <span>SECURE SESSION INITIALIZING</span>
+                </div>
+
+                <div className="auth-transition-progress">
+                  <span />
+                </div>
+
+                <div className="auth-transition-meta">
+                  <span>CYBERGUARD</span>
+                  <span>AUTH → ORGANIZATION</span>
+                </div>
+              </div>
+            )}
+
+            <div className="auth-card-footer">
+              <span>CYBERGUARD</span>
+              <span>SECURE ORGANIZATIONAL ACCESS</span>
+            </div>
+          </section>
+        </div>
       </div>
-    </div>
+
+      {isEntering && (
+        <div
+          className="auth-entry-overlay"
+          aria-hidden="true"
+        >
+          <div className="auth-entry-logo">
+            <div className="auth-entry-ring auth-entry-ring-one" />
+            <div className="auth-entry-ring auth-entry-ring-two" />
+
+            <div className="auth-entry-core">
+              <span />
+            </div>
+          </div>
+
+          <div className="auth-entry-label">
+            <span>CYBERGUARD</span>
+            <strong>SECURE ACCESS</strong>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

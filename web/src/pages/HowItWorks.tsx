@@ -37,20 +37,33 @@ export default function HowItWorks() {
   return (
     <div className="how-it-works-page">
       <section className="workflow-hero">
-        <span className="home-eyebrow">THE CYBERGUARD WORKFLOW</span>
+        <div className="workflow-hero-content">
+          <span className="home-eyebrow">THE CYBERGUARD WORKFLOW</span>
 
-        <h1>
-          From a security signal
-          <span> to an actionable result.</span>
-        </h1>
+          <h1>
+            From a security signal
+            <span> to an actionable result.</span>
+          </h1>
 
-        <p>
-          CyberGuard connects detection, analysis, explanation, and security
-          monitoring into a single organizational workflow.
-        </p>
+          <p>
+            CyberGuard connects detection, analysis, explanation, and security
+            monitoring into a single organizational workflow.
+          </p>
+        </div>
+
+        <div className="workflow-hero-indicator" aria-hidden="true">
+          <span className="workflow-pulse" />
+          <span>SECURITY FLOW</span>
+          <strong>01—05</strong>
+        </div>
       </section>
 
       <section className="workflow-flow-section">
+        <div className="workflow-flow-header">
+          <span className="home-eyebrow">SECURITY PIPELINE</span>
+          <span className="workflow-flow-label">CONTINUOUS ANALYSIS</span>
+        </div>
+
         <div className="workflow-flow">
           {flowItems.map((item, index) => (
             <div className="workflow-flow-item" key={item}>
@@ -72,36 +85,60 @@ export default function HowItWorks() {
 
       <section className="workflow-steps-section">
         <div className="workflow-section-heading">
-          <span className="home-eyebrow">HOW IT WORKS</span>
+          <div>
+            <span className="home-eyebrow">HOW IT WORKS</span>
 
-          <h2>A clear workflow for organizational security.</h2>
+            <h2>A clear workflow for organizational security.</h2>
+          </div>
+
+          <span className="workflow-heading-index">/ 04</span>
         </div>
 
         <div className="workflow-steps">
           {steps.map((step) => (
             <article className="workflow-step" key={step.number}>
-              <span className="workflow-step-number">{step.number}</span>
+              <div className="workflow-step-top">
+                <span className="workflow-step-number">
+                  {step.number}
+                </span>
 
-              <div>
+                <span className="workflow-step-arrow" aria-hidden="true">
+                  ↗
+                </span>
+              </div>
+
+              <div className="workflow-step-content">
                 <h3>{step.title}</h3>
+
                 <p>{step.description}</p>
               </div>
+
+              <div className="workflow-step-line" aria-hidden="true" />
             </article>
           ))}
         </div>
       </section>
 
       <section className="workflow-cta">
-        <div>
+        <div className="workflow-cta-content">
           <span className="home-eyebrow">READY TO BEGIN?</span>
 
-          <h2>Put your organization's security in one place.</h2>
+          <h2>
+            Put your organization's
+            <span> security in one place.</span>
+          </h2>
+
+          <p>
+            Start with CyberGuard and build a centralized view of your
+            organization's cybersecurity environment.
+          </p>
         </div>
 
-        <p>
-          Start with CyberGuard and build a centralized view of your
-          organization's cybersecurity environment.
-        </p>
+        <div className="workflow-cta-orbit" aria-hidden="true">
+          <span />
+          <span />
+          <strong>CG</strong>
+        </div>
       </section>
     </div>
   );

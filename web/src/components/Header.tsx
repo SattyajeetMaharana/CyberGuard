@@ -1,4 +1,6 @@
 import { NavLink } from "react-router-dom";
+
+import CyberGuardLogo from "./CyberGuardLogo";
 import ThemeToggle from "./ThemeToggle";
 
 const navigation = [
@@ -12,10 +14,7 @@ export default function Header() {
   return (
     <header className="site-header">
       <div className="header-container">
-        <NavLink to="/" className="brand">
-          <span className="brand-mark">C</span>
-          <span className="brand-name">CyberGuard</span>
-        </NavLink>
+        <CyberGuardLogo className="site-header-logo" />
 
         <nav className="desktop-nav" aria-label="Main navigation">
           {navigation.map((item) => (

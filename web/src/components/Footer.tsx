@@ -1,5 +1,7 @@
 import { NavLink } from "react-router-dom";
 
+import CyberGuardLogo from "./CyberGuardLogo";
+
 const footerLinks = [
   { label: "Home", path: "/" },
   { label: "Features", path: "/features" },
@@ -13,10 +15,10 @@ export default function Footer() {
       <div className="footer-container">
         <div className="footer-main">
           <div className="footer-brand">
-            <NavLink to="/" className="footer-logo">
-              <span className="footer-logo-mark">C</span>
-              <span>CyberGuard</span>
-            </NavLink>
+            <CyberGuardLogo
+              className="footer-logo"
+              showName
+            />
 
             <p className="footer-description">
               Unified cybersecurity protection for individuals and
@@ -24,7 +26,10 @@ export default function Footer() {
             </p>
           </div>
 
-          <nav className="footer-navigation" aria-label="Footer navigation">
+          <nav
+            className="footer-navigation"
+            aria-label="Footer navigation"
+          >
             <span className="footer-heading">Explore</span>
 
             {footerLinks.map((link) => (
@@ -35,7 +40,9 @@ export default function Footer() {
           </nav>
 
           <div className="footer-navigation">
-            <span className="footer-heading">Organization</span>
+            <span className="footer-heading">
+              Organization
+            </span>
 
             <NavLink to="/login">Login</NavLink>
             <NavLink to="/register">Register</NavLink>

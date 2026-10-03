@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 
 import PublicLayout from "../layouts/PublicLayout";
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
+import PageTransition from "../components/PageTransition";
 
 import Home from "../pages/Home";
 import Features from "../pages/Features";
@@ -19,6 +20,7 @@ import Employees from "../pages/Employees";
 import Devices from "../pages/Devices";
 import Policies from "../pages/Policies";
 import Settings from "../pages/Settings";
+
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   // Authentication logic will be implemented in the functional phase.
   return children;
@@ -38,6 +40,14 @@ function NotFound() {
   );
 }
 
+function AnimatedPage({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return <PageTransition>{children}</PageTransition>;
+}
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -49,7 +59,9 @@ export default function AppRoutes() {
         path="/"
         element={
           <PublicLayout>
-            <Home />
+            <AnimatedPage>
+              <Home />
+            </AnimatedPage>
           </PublicLayout>
         }
       />
@@ -58,7 +70,9 @@ export default function AppRoutes() {
         path="/features"
         element={
           <PublicLayout>
-            <Features />
+            <AnimatedPage>
+              <Features />
+            </AnimatedPage>
           </PublicLayout>
         }
       />
@@ -67,7 +81,9 @@ export default function AppRoutes() {
         path="/how-it-works"
         element={
           <PublicLayout>
-            <HowItWorks />
+            <AnimatedPage>
+              <HowItWorks />
+            </AnimatedPage>
           </PublicLayout>
         }
       />
@@ -76,7 +92,9 @@ export default function AppRoutes() {
         path="/download"
         element={
           <PublicLayout>
-            <Download />
+            <AnimatedPage>
+              <Download />
+            </AnimatedPage>
           </PublicLayout>
         }
       />
@@ -85,7 +103,9 @@ export default function AppRoutes() {
         path="/login"
         element={
           <PublicLayout>
-            <Login />
+            <AnimatedPage>
+              <Login />
+            </AnimatedPage>
           </PublicLayout>
         }
       />
@@ -94,7 +114,9 @@ export default function AppRoutes() {
         path="/register"
         element={
           <PublicLayout>
-            <Register />
+            <AnimatedPage>
+              <Register />
+            </AnimatedPage>
           </PublicLayout>
         }
       />
@@ -108,7 +130,9 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute>
             <AuthenticatedLayout>
-              <Dashboard />
+              <AnimatedPage>
+                <Dashboard />
+              </AnimatedPage>
             </AuthenticatedLayout>
           </ProtectedRoute>
         }
@@ -119,41 +143,48 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute>
             <AuthenticatedLayout>
-              <Threats />
+              <AnimatedPage>
+                <Threats />
+              </AnimatedPage>
             </AuthenticatedLayout>
           </ProtectedRoute>
         }
       />
 
       <Route
-          path="/incidents"
-          element={
-            <ProtectedRoute>
-              <AuthenticatedLayout>
+        path="/incidents"
+        element={
+          <ProtectedRoute>
+            <AuthenticatedLayout>
+              <AnimatedPage>
                 <Incidents />
-              </AuthenticatedLayout>
-            </ProtectedRoute>
-          }
-        />
+              </AnimatedPage>
+            </AuthenticatedLayout>
+          </ProtectedRoute>
+        }
+      />
 
       <Route
         path="/cyber-score"
         element={
           <ProtectedRoute>
             <AuthenticatedLayout>
-              <CyberScore />
+              <AnimatedPage>
+                <CyberScore />
+              </AnimatedPage>
             </AuthenticatedLayout>
           </ProtectedRoute>
         }
       />
-
 
       <Route
         path="/departments"
         element={
           <ProtectedRoute>
             <AuthenticatedLayout>
-              <Departments />
+              <AnimatedPage>
+                <Departments />
+              </AnimatedPage>
             </AuthenticatedLayout>
           </ProtectedRoute>
         }
@@ -164,7 +195,9 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute>
             <AuthenticatedLayout>
-              <Employees />
+              <AnimatedPage>
+                <Employees />
+              </AnimatedPage>
             </AuthenticatedLayout>
           </ProtectedRoute>
         }
@@ -175,7 +208,9 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute>
             <AuthenticatedLayout>
-              <Devices />
+              <AnimatedPage>
+                <Devices />
+              </AnimatedPage>
             </AuthenticatedLayout>
           </ProtectedRoute>
         }
@@ -186,7 +221,9 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute>
             <AuthenticatedLayout>
-              <Policies />
+              <AnimatedPage>
+                <Policies />
+              </AnimatedPage>
             </AuthenticatedLayout>
           </ProtectedRoute>
         }
@@ -197,7 +234,9 @@ export default function AppRoutes() {
         element={
           <ProtectedRoute>
             <AuthenticatedLayout>
-              <Settings />
+              <AnimatedPage>
+                <Settings />
+              </AnimatedPage>
             </AuthenticatedLayout>
           </ProtectedRoute>
         }
@@ -211,7 +250,9 @@ export default function AppRoutes() {
         path="*"
         element={
           <PublicLayout>
-            <NotFound />
+            <AnimatedPage>
+              <NotFound />
+            </AnimatedPage>
           </PublicLayout>
         }
       />
