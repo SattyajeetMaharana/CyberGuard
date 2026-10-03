@@ -1,0 +1,97 @@
+{
+  "model_name": "impersonation-xgboost",
+  "model_version": "impersonation-xgboost-v1",
+  "task": "business_email_compromise_impersonation_detection",
+  "created_at": "2026-10-03",
+  "training_dataset": {
+    "name": "Africa BEC Dataset",
+    "source": "electricsheepafrica/africa-bec-dataset",
+    "access": "Public Hugging Face dataset repository",
+    "license": "Not specified in the available dataset metadata",
+    "samples": 10000,
+    "train_samples": 7000,
+    "validation_samples": 1500,
+    "test_samples": 1500
+  },
+  "feature_schema": [
+    "urgency_level",
+    "requests_wire_transfer",
+    "requests_gift_cards",
+    "requests_sensitive_data",
+    "dkim_pass",
+    "spf_pass",
+    "dmarc_pass",
+    "reply_to_mismatch",
+    "is_end_of_month",
+    "is_friday",
+    "sent_outside_hours",
+    "requested_amount_usd",
+    "auth_failure",
+    "partial_auth",
+    "full_auth_bypass",
+    "payroll_timing",
+    "weekend_timing",
+    "after_hours"
+  ],
+  "preprocessing": {
+    "feature_count": 18,
+    "split_strategy": "Stratified train/validation/test split",
+    "split_ratio": {
+      "train": 0.70,
+      "validation": 0.15,
+      "test": 0.15
+    },
+    "label_balance": {
+      "train": {
+        "benign": 3500,
+        "impersonation": 3500
+      },
+      "validation": {
+        "benign": 750,
+        "impersonation": 750
+      },
+      "test": {
+        "benign": 750,
+        "impersonation": 750
+      }
+    }
+  },
+  "metrics": {
+    "validation": {
+      "accuracy": 0.978,
+      "precision": 0.9799196787,
+      "recall": 0.976,
+      "f1": 0.9779559118,
+      "roc_auc": 0.9980888889,
+      "pr_auc": 0.9982608683
+    },
+    "test": {
+      "accuracy": 0.986,
+      "precision": 0.9879518072,
+      "recall": 0.984,
+      "f1": 0.9859719439,
+      "roc_auc": 0.9993137778,
+      "pr_auc": 0.9993525409
+    }
+  },
+  "hyperparameters": {
+    "n_estimators": 300,
+    "max_depth": 5,
+    "learning_rate": 0.05,
+    "subsample": 0.8,
+    "colsample_bytree": 0.8,
+    "objective": "binary:logistic",
+    "eval_metric": "logloss",
+    "random_state": 42,
+    "tree_method": "hist"
+  },
+  "notes": [
+    "Model trained using 18 detection-time security and communication features.",
+    "Geographic and target-context features were excluded to reduce dataset-specific artifacts.",
+    "Outcome-derived and precomputed risk fields were excluded to reduce target leakage.",
+    "Performance is measured on the Africa BEC dataset and should not be interpreted as a guaranteed real-world detection rate.",
+    "The dataset is a single-source benchmark; external validation is still required.",
+    "The current detector expects structured detection-time features supplied by the caller; it does not claim direct access to private email or messaging systems.",
+    "The current model does not directly consume raw sender identity text, display-name text, domain-similarity text, or message body content."
+  ]
+}
