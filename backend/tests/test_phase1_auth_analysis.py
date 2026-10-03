@@ -31,7 +31,7 @@ async def client():
         yield test_client
 
     await engine.dispose()
-    
+
 def unique_email() -> str:
     return f"phase1_{uuid4().hex}@example.com"
 
