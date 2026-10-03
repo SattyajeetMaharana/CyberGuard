@@ -1,9 +1,10 @@
 from datetime import datetime, timedelta, timezone
+from hashlib import sha256
 from typing import Any
 
 import jwt
 from argon2 import PasswordHasher
-from argon2.exceptions import VerifyMismatchError, VerificationError
+from argon2.exceptions import InvalidHashError, VerificationError
 
 from app.core.config import settings
 
@@ -11,18 +12,26 @@ from app.core.config import settings
 password_hasher = PasswordHasher()
 
 
+# ---------------------------------------------------------------------------
+# Password security
+# ---------------------------------------------------------------------------
+
 def hash_password(password: str) -> str:
-    """Hash a password using Argon2."""
+    """Hash a plaintext password using Argon2."""
     return password_hasher.hash(password)
 
 
 def verify_password(password: str, password_hash: str) -> bool:
-    """Verify a plaintext password against an Argon2 hash."""
+    """Verify a plaintext password against an Argon2 password hash."""
     try:
         return password_hasher.verify(password_hash, password)
-    except (VerifyMismatchError, VerificationError):
+    except (VerificationError, InvalidHashError):
         return False
 
+
+# ---------------------------------------------------------------------------
+# Token security
+# ---------------------------------------------------------------------------
 
 def _create_token(
     subject: str,
@@ -58,7 +67,7 @@ def create_access_token(subject: str) -> str:
 
 
 def create_refresh_token(subject: str) -> str:
-    """Create a longer-lived refresh token."""
+    """Create a long-lived refresh token."""
     return _create_token(
         subject=subject,
         token_type="refresh",
@@ -69,7 +78,11 @@ def create_refresh_token(subject: str) -> str:
 
 
 def decode_token(token: str) -> dict[str, Any]:
-    """Decode and validate a JWT."""
+    """
+    Decode and cryptographically validate a JWT.
+
+    PyJWT validates the signature and expiration (`exp`) during decoding.
+    """
     return jwt.decode(
         token,
         settings.JWT_SECRET_KEY,
@@ -77,8 +90,11 @@ def decode_token(token: str) -> dict[str, Any]:
     )
 
 
-def verify_token_type(token: str, expected_type: str) -> dict[str, Any]:
-    """Decode a token and ensure it has the expected token type."""
+def verify_token_type(
+    token: str,
+    expected_type: str,
+) -> dict[str, Any]:
+    """Validate a JWT and ensure it is the expected token type."""
     payload = decode_token(token)
 
     if payload.get("type") != expected_type:
@@ -88,18 +104,16 @@ def verify_token_type(token: str, expected_type: str) -> dict[str, Any]:
         raise ValueError("Invalid token subject")
 
     return payload
-from argon2 import PasswordHasher
-from argon2.exceptions import VerificationError, InvalidHashError
-
-password_hasher = PasswordHasher()
 
 
-def hash_password(password: str) -> str:
-    return password_hasher.hash(password)
+# ---------------------------------------------------------------------------
+# Refresh-token storage security
+# ---------------------------------------------------------------------------
 
+def hash_token(token: str) -> str:
+    """
+    Hash a refresh token before storing it in the database.
 
-def verify_password(password: str, password_hash: str) -> bool:
-    try:
-        return password_hasher.verify(password_hash, password)
-    except (VerificationError, InvalidHashError):
-        return False
+    The raw refresh token must never be stored in the database.
+    """
+    return sha256(token.encode("utf-8")).hexdigest()
