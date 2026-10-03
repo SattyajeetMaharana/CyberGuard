@@ -28,7 +28,7 @@ class IncidentUpdate:
     analyst_note: Optional[str] = None
 
 
-@dataclass(frozen=True)
+@dataclass
 class Incident:
     id: UUID
     context_id: UUID
