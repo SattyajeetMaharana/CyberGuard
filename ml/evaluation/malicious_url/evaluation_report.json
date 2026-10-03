@@ -1,0 +1,103 @@
+{
+  "model": {
+    "name": "cyberguard-malicious-url-xgboost",
+    "version": "malicious-url-xgboost-v1",
+    "model_path": "ml\\models\\trained\\malicious_url\\malicious_url_xgboost.json"
+  },
+  "dataset": {
+    "name": "PhiUSIIL",
+    "split": "test",
+    "samples": 35306,
+    "features": [
+      "URLLength",
+      "DomainLength",
+      "IsDomainIP",
+      "TLDLength",
+      "NoOfSubDomain",
+      "HasObfuscation",
+      "NoOfObfuscatedChar",
+      "ObfuscationRatio",
+      "NoOfLettersInURL",
+      "LetterRatioInURL",
+      "NoOfDegitsInURL",
+      "DegitRatioInURL",
+      "NoOfEqualsInURL",
+      "NoOfQMarkInURL",
+      "NoOfAmpersandInURL",
+      "NoOfOtherSpecialCharsInURL",
+      "SpacialCharRatioInURL",
+      "IsHTTPS"
+    ]
+  },
+  "label_mapping": {
+    "0": "malicious",
+    "1": "benign"
+  },
+  "threshold": 0.5,
+  "metrics": {
+    "accuracy": 0.9946751260408996,
+    "precision": 0.994131571160864,
+    "recall": 0.9965888866917144,
+    "f1": 0.9953587122895373,
+    "roc_auc": 0.998046007114596,
+    "true_negative": 14959,
+    "false_positive": 119,
+    "false_negative": 69,
+    "true_positive": 20159,
+    "false_positive_rate": 0.007892293407613741,
+    "false_negative_rate": 0.003411113308285545
+  },
+  "confusion_matrix": {
+    "true_negative": 14959,
+    "false_positive": 119,
+    "false_negative": 69,
+    "true_positive": 20159
+  },
+  "classification_report": {
+    "malicious": {
+      "precision": 0.9954085706680862,
+      "recall": 0.9921077065923862,
+      "f1-score": 0.9937553975951637,
+      "support": 15078.0
+    },
+    "benign": {
+      "precision": 0.994131571160864,
+      "recall": 0.9965888866917144,
+      "f1-score": 0.9953587122895373,
+      "support": 20228.0
+    },
+    "accuracy": 0.9946751260408996,
+    "macro avg": {
+      "precision": 0.9947700709144751,
+      "recall": 0.9943482966420503,
+      "f1-score": 0.9945570549423506,
+      "support": 35306.0
+    },
+    "weighted avg": {
+      "precision": 0.994676934514682,
+      "recall": 0.9946751260408996,
+      "f1-score": 0.994673990741875,
+      "support": 35306.0
+    }
+  },
+  "feature_importance": {
+    "IsHTTPS": 0.6304519772529602,
+    "NoOfDegitsInURL": 0.18721160292625427,
+    "DegitRatioInURL": 0.0358763188123703,
+    "NoOfSubDomain": 0.034630730748176575,
+    "URLLength": 0.028598422184586525,
+    "NoOfOtherSpecialCharsInURL": 0.022716263309121132,
+    "NoOfLettersInURL": 0.021556871011853218,
+    "DomainLength": 0.0167380478233099,
+    "LetterRatioInURL": 0.016126029193401337,
+    "TLDLength": 0.006093764211982489,
+    "IsDomainIP": 0.0,
+    "HasObfuscation": 0.0,
+    "NoOfObfuscatedChar": 0.0,
+    "ObfuscationRatio": 0.0,
+    "NoOfEqualsInURL": 0.0,
+    "NoOfQMarkInURL": 0.0,
+    "NoOfAmpersandInURL": 0.0,
+    "SpacialCharRatioInURL": 0.0
+  }
+}

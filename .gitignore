@@ -22,3 +22,12 @@ env/
 Thumbs.db
 # Raw ML datasets
 ml/datasets/*/raw/
+
+# Generated ML datasets
+ml/datasets/*/processed/*.csv
+
+# Trained model binaries/artifacts
+ml/models/trained/**/*.json
+ml/models/trained/**/*.bin
+ml/models/trained/**/*.pkl
+ml/models/trained/**/*.joblib

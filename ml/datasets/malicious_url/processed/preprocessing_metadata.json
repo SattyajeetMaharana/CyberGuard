@@ -1,0 +1,42 @@
+{
+  "dataset": "PhiUSIIL Phishing URL Dataset",
+  "source_file": "PhiUSIIL_Phishing_URL_Dataset.zip",
+  "url_column": "URL",
+  "label_column": "label",
+  "label_mapping": {
+    "0": "phishing_malicious",
+    "1": "legitimate_benign"
+  },
+  "feature_count": 18,
+  "features": [
+    "URLLength",
+    "DomainLength",
+    "IsDomainIP",
+    "TLDLength",
+    "NoOfSubDomain",
+    "HasObfuscation",
+    "NoOfObfuscatedChar",
+    "ObfuscationRatio",
+    "NoOfLettersInURL",
+    "LetterRatioInURL",
+    "NoOfDegitsInURL",
+    "DegitRatioInURL",
+    "NoOfEqualsInURL",
+    "NoOfQMarkInURL",
+    "NoOfAmpersandInURL",
+    "NoOfOtherSpecialCharsInURL",
+    "SpacialCharRatioInURL",
+    "IsHTTPS"
+  ],
+  "random_state": 42,
+  "split_ratio": {
+    "train": 0.7,
+    "validation": 0.15,
+    "test": 0.15
+  },
+  "raw_rows": 235795,
+  "clean_rows": 235370,
+  "train_rows": 164759,
+  "validation_rows": 35305,
+  "test_rows": 35306
+}
