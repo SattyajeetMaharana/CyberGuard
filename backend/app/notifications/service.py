@@ -1,6 +1,10 @@
 from uuid import uuid4
 
-from .contracts import NotificationEvent
+from .contracts import (
+    Notification,
+    NotificationEvent,
+    NotificationType,
+)
 
 
 class NotificationService:
@@ -17,3 +21,19 @@ class NotificationService:
 
 
 notification_service = NotificationService()
+
+
+def create_notification(
+    user_id: str,
+    notification_type: NotificationType,
+    title: str,
+    message: str,
+) -> Notification:
+    """Backward-compatible notification creation API."""
+
+    return Notification(
+        user_id=user_id,
+        notification_type=notification_type,
+        title=title,
+        message=message,
+    )

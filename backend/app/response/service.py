@@ -1,42 +1,66 @@
-from typing import Protocol, Sequence
-from uuid import UUID
-
 from .contracts import (
-    ScoreDomain,
-    ScoreEvent,
-    ScoreEventInput,
-    ScoreHistoryQuery,
-    ScoreSnapshot,
-    ScoreSubjectType,
+    ResponseAction,
+    ResponseRecommendation,
 )
 
 
-class ScoreService(Protocol):
-    def calculate_score(
-        self,
-        current_score: float,
-        *,
-        threat_detected: bool,
-    ) -> float:
-        """Calculate a score according to the agreed scoring version."""
-        ...
+def recommend_response(
+    *args,
+    risk_level: str | None = None,
+    category: str | None = None,
+) -> list[ResponseRecommendation] | ResponseRecommendation:
 
-    def record_score_event(self, event: ScoreEventInput) -> ScoreEvent:
-        """Record a score change and return its history event."""
-        ...
+    # Backward-compatible API:
+    # recommend_response(action, reason)
+    if len(args) == 2:
+        action, reason = args
 
-    def get_current_score(
-        self,
-        *,
-        context_id: UUID,
-        subject_type: ScoreSubjectType,
-        subject_id: UUID,
-        domain: ScoreDomain,
-    ) -> ScoreSnapshot | None:
-        ...
+        return ResponseRecommendation(
+            action=action,
+            reason=reason,
+            requires_approval=action == ResponseAction.NOTIFY_ADMIN,
+        )
 
-    def get_score_history(
-        self,
-        query: ScoreHistoryQuery,
-    ) -> Sequence[ScoreEvent]:
-        ...
+    recommendations: list[ResponseRecommendation] = []
+
+    if category == "phishing_url":
+        recommendations.extend(
+            [
+                ResponseRecommendation(
+                    action=ResponseAction.DO_NOT_OPEN_URL,
+                    reason="Do not open the suspicious URL.",
+                    requires_approval=False,
+                ),
+                ResponseRecommendation(
+                    action=ResponseAction.VERIFY_DOMAIN,
+                    reason="Verify the domain before interacting with the message.",
+                    requires_approval=False,
+                ),
+                ResponseRecommendation(
+                    action=ResponseAction.REPORT_MESSAGE,
+                    reason="Report the suspicious message to the security team.",
+                    requires_approval=False,
+                ),
+                ResponseRecommendation(
+                    action=ResponseAction.REMOVE_SUSPICIOUS_CONTENT,
+                    reason="Remove suspicious content after review.",
+                    requires_approval=True,
+                ),
+                ResponseRecommendation(
+                    action=ResponseAction.NOTIFY_ADMIN,
+                    reason="A potentially malicious URL was detected.",
+                    requires_approval=True,
+                ),
+            ]
+        )
+
+    elif risk_level in {"HIGH", "CRITICAL"}:
+        recommendations.append(
+            ResponseRecommendation(
+                action=ResponseAction.NOTIFY_ADMIN,
+                reason="High-risk security event detected.",
+                requires_approval=True,
+            )
+        )
+
+    return recommendations

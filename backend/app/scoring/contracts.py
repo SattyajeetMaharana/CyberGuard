@@ -2,15 +2,25 @@ from dataclasses import dataclass
 from datetime import datetime
 
 
-@dataclass
+@dataclass(frozen=True)
 class ScoreEvent:
     user_id: str
-    change: int
-    reason: str
+    previous_score: int
+    delta: int
+    new_score: int
+    event: str
     timestamp: datetime
 
+    @property
+    def change(self) -> int:
+        return self.delta
 
-@dataclass
+    @property
+    def reason(self) -> str:
+        return self.event
+
+
+@dataclass(frozen=True)
 class CyberScore:
     user_id: str
     score: int

@@ -10,6 +10,11 @@ class ResponseAction(StrEnum):
     NOTIFY_ADMIN = "notify_admin"
     REQUEST_USER_CONFIRMATION = "request_user_confirmation"
 
+    DO_NOT_OPEN_URL = "do_not_open_url"
+    VERIFY_DOMAIN = "verify_domain"
+    REPORT_MESSAGE = "report_message"
+    REMOVE_SUSPICIOUS_CONTENT = "remove_suspicious_content"
+
 
 @dataclass(frozen=True)
 class ResponseRecommendation:
@@ -26,5 +31,4 @@ class ResponseRecommender(Protocol):
         policy_result: object,
         detection: object,
     ) -> Sequence[ResponseRecommendation]:
-        """Return proposed actions; do not execute them."""
         ...

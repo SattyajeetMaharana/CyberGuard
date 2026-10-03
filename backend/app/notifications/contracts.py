@@ -5,6 +5,16 @@ from typing import Protocol
 from uuid import UUID
 
 
+class NotificationType(StrEnum):
+    """Backward-compatible notification type."""
+
+    THREAT = "THREAT"
+    INCIDENT = "INCIDENT"
+    WARNING = "WARNING"
+    SUSPENSION = "SUSPENSION"
+    SECURITY_RECOMMENDATION = "SECURITY_RECOMMENDATION"
+
+
 class NotificationKind(StrEnum):
     THREAT = "threat"
     INCIDENT = "incident"
@@ -20,6 +30,16 @@ class NotificationChannel(StrEnum):
 
 
 @dataclass(frozen=True)
+class Notification:
+    """Backward-compatible notification object."""
+
+    user_id: str
+    notification_type: NotificationType
+    title: str
+    message: str
+
+
+@dataclass(frozen=True)
 class NotificationEvent:
     recipient_id: UUID
     context_id: UUID
@@ -31,7 +51,11 @@ class NotificationEvent:
     detection_id: UUID | None = None
 
 
-class NotificationService(Protocol):
+class NotificationProvider(Protocol):
+    def send(self, event: NotificationEvent) -> str:
+        ...
+
+
+class NotificationServiceProtocol(Protocol):
     def enqueue(self, event: NotificationEvent) -> str:
-        """Queue the event and return a tracking ID."""
         ...
