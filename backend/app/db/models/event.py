@@ -17,9 +17,23 @@ class Event(TimestampMixin, Base):
         default=uuid4,
     )
 
+    context_id: Mapped[UUID | None] = mapped_column(
+        PGUUID(as_uuid=True),
+        ForeignKey("security_contexts.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+
     user_id: Mapped[UUID | None] = mapped_column(
         PGUUID(as_uuid=True),
         ForeignKey("users.id", ondelete="SET NULL"),
+        nullable=True,
+        index=True,
+    )
+
+    device_id: Mapped[UUID | None] = mapped_column(
+        PGUUID(as_uuid=True),
+        ForeignKey("devices.id", ondelete="SET NULL"),
         nullable=True,
         index=True,
     )
@@ -30,7 +44,7 @@ class Event(TimestampMixin, Base):
         index=True,
     )
 
-    source: Mapped[str | None] = mapped_column(
+    source_type: Mapped[str | None] = mapped_column(
         String(100),
         nullable=True,
     )

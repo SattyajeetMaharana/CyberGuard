@@ -1,14 +1,16 @@
+from __future__ import annotations
+
 from uuid import UUID, uuid4
 
-from sqlalchemy import Boolean, ForeignKey, String
+from sqlalchemy import String
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base, TimestampMixin
 
 
-class User(TimestampMixin, Base):
-    __tablename__ = "users"
+class SecurityContext(TimestampMixin, Base):
+    __tablename__ = "security_contexts"
 
     id: Mapped[UUID] = mapped_column(
         PGUUID(as_uuid=True),
@@ -16,33 +18,24 @@ class User(TimestampMixin, Base):
         default=uuid4,
     )
 
-    email: Mapped[str] = mapped_column(
-        String(320),
-        unique=True,
-        index=True,
+    context_type: Mapped[str] = mapped_column(
+        String(30),
         nullable=False,
     )
 
-    full_name: Mapped[str] = mapped_column(
-        String(200),
-        nullable=False,
-    )
-
-    role_id: Mapped[UUID | None] = mapped_column(
+    user_id: Mapped[UUID] = mapped_column(
         PGUUID(as_uuid=True),
-        ForeignKey("roles.id", ondelete="SET NULL"),
+        nullable=False,
+        index=True,
+    )
+
+    organization_id: Mapped[UUID | None] = mapped_column(
+        PGUUID(as_uuid=True),
         nullable=True,
         index=True,
     )
 
     is_active: Mapped[bool] = mapped_column(
-        Boolean,
         nullable=False,
         default=True,
-    )
-
-    is_verified: Mapped[bool] = mapped_column(
-        Boolean,
-        nullable=False,
-        default=False,
     )
