@@ -1,3 +1,5 @@
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "backend/tests"]
 python_files = ["test_*.py"]
+pythonpath = ["backend"]
+addopts = "--import-mode=importlib"

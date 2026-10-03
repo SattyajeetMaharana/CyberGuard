@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, timezone
 from hashlib import sha256
 from typing import Any
+from uuid import uuid4
 
 import jwt
 from argon2 import PasswordHasher
@@ -46,6 +47,7 @@ def _create_token(
         "type": token_type,
         "iat": now,
         "exp": now + expires_delta,
+        "jti": str(uuid4()),
     }
 
     return jwt.encode(

@@ -10,9 +10,12 @@ from app.core.security import (
     hash_password,
     hash_token,
     verify_password,
+    verify_token_type,
 )
 from app.db.models.credential import Credential
 from app.db.models.refresh_token import RefreshToken
+from app.db.models.role import Role
+from app.db.models.security_context import SecurityContext
 from app.db.models.session import Session
 from app.db.models.user import User
 
@@ -23,7 +26,7 @@ async def signup_user(
     full_name: str,
     password: str,
 ) -> User:
-    """Create a user and securely store the Argon2 password hash."""
+    """Create a personal user with the default PERSONAL_USER role."""
 
     result = await db.execute(
         select(User).where(User.email == email)
@@ -34,15 +37,36 @@ async def signup_user(
     if existing_user is not None:
         raise ValueError("Email already registered")
 
+    role_result = await db.execute(
+        select(Role).where(
+            Role.name == "PERSONAL_USER",
+        )
+    )
+
+    personal_user_role = role_result.scalar_one_or_none()
+
+    if personal_user_role is None:
+        raise RuntimeError("PERSONAL_USER role is not configured")
+
     user = User(
         email=email,
         full_name=full_name,
+        role_id=personal_user_role.id,
         is_active=True,
         is_verified=False,
     )
 
     db.add(user)
     await db.flush()
+
+    security_context = SecurityContext(
+        context_type="PERSONAL",
+        user_id=user.id,
+        organization_id=None,
+        is_active=True,
+    )
+
+    db.add(security_context)
 
     credential = Credential(
         user_id=user.id,
@@ -153,8 +177,6 @@ async def refresh_session(
     Validate a refresh token against its JWT claims and
     server-side hashed token record, then rotate it.
     """
-
-    from app.core.security import verify_token_type
 
     try:
         payload = verify_token_type(
@@ -290,9 +312,11 @@ async def revoke_refresh_token(
 
 def generate_access_token(user_id: str) -> str:
     """Generate an access token for an authenticated user."""
+
     return create_access_token(subject=user_id)
 
 
 def generate_refresh_token(user_id: str) -> str:
     """Generate a refresh token for an authenticated user."""
+
     return create_refresh_token(subject=user_id)
