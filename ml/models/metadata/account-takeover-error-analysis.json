@@ -1,0 +1,149 @@
+{
+  "model": "ml\\models\\trained\\account_takeover\\account-takeover-xgboost-v1.joblib",
+  "test_features": "ml\\datasets\\account_takeover\\processed\\features\\test.csv",
+  "threshold": 0.5,
+  "test_samples": 1973,
+  "true_negatives": 1925,
+  "false_positives": 27,
+  "false_negatives": 8,
+  "true_positives": 13,
+  "ato_probability": {
+    "min": 0.0014576591784134507,
+    "mean": 0.6371049284934998,
+    "max": 0.9946265816688538
+  },
+  "benign_probability": {
+    "min": 0.00016742317529860884,
+    "mean": 0.03523571789264679,
+    "max": 0.9179203510284424
+  },
+  "feature_means_by_group": {
+    "login_hour": {
+      "correct": 12.898348813209495,
+      "false_negative": 9.875,
+      "false_positive": 14.666666666666666
+    },
+    "login_day_of_week": {
+      "correct": 2.865841073271414,
+      "false_negative": 3.375,
+      "false_positive": 2.4074074074074074
+    },
+    "is_weekend": {
+      "correct": 0.2528379772961816,
+      "false_negative": 0.25,
+      "false_positive": 0.1111111111111111
+    },
+    "is_outside_hours": {
+      "correct": 0.16253869969040247,
+      "false_negative": 0.125,
+      "false_positive": 0.14814814814814814
+    },
+    "login_successful": {
+      "correct": 0.7518059855521155,
+      "false_negative": 1.0,
+      "false_positive": 1.0
+    },
+    "country_frequency": {
+      "correct": 0.3608735386615583,
+      "false_negative": 0.23746544037499998,
+      "false_positive": 0.060242819695925924
+    },
+    "region_frequency": {
+      "correct": 0.2012988727261197,
+      "false_negative": 0.22609785280875,
+      "false_positive": 0.14399023048814816
+    },
+    "city_frequency": {
+      "correct": 0.18009445572698657,
+      "false_negative": 0.21346242696125,
+      "false_positive": 0.1422485199437037
+    },
+    "asn_frequency": {
+      "correct": 0.14532545488968007,
+      "false_negative": 0.09095493199625,
+      "false_positive": 0.0010800334866666666
+    },
+    "browser_frequency": {
+      "correct": 0.015369790335490198,
+      "false_negative": 0.010877708855,
+      "false_positive": 0.01430510787037037
+    },
+    "os_frequency": {
+      "correct": 0.0990019826640196,
+      "false_negative": 0.10583794499999999,
+      "false_positive": 0.1362848583814815
+    },
+    "device_frequency": {
+      "correct": 0.5089395960794634,
+      "false_negative": 0.44437241625,
+      "false_positive": 0.44278811814814817
+    },
+    "user_login_count": {
+      "correct": 13.736842105263158,
+      "false_negative": 15.0,
+      "false_positive": 2.2222222222222223
+    },
+    "user_failure_count": {
+      "correct": 1.934984520123839,
+      "false_negative": 0.75,
+      "false_positive": 0.2222222222222222
+    },
+    "user_failure_rate": {
+      "correct": 0.17757056881449948,
+      "false_negative": 0.092573052125,
+      "false_positive": 0.026717315925925925
+    },
+    "user_unique_countries": {
+      "correct": 1.2105263157894737,
+      "false_negative": 1.625,
+      "false_positive": 0.6296296296296297
+    },
+    "user_unique_devices": {
+      "correct": 1.060887512899897,
+      "false_negative": 1.125,
+      "false_positive": 0.5555555555555556
+    },
+    "time_since_previous_login_seconds": {
+      "correct": 1318829.485852425,
+      "false_negative": 181110.46,
+      "false_positive": 398362.46400000004
+    },
+    "is_new_country": {
+      "correct": 0.22084623323013416,
+      "false_negative": 0.375,
+      "false_positive": 0.8518518518518519
+    },
+    "is_new_region": {
+      "correct": 0.3539731682146543,
+      "false_negative": 0.375,
+      "false_positive": 0.8148148148148148
+    },
+    "is_new_city": {
+      "correct": 0.38338493292053666,
+      "false_negative": 0.375,
+      "false_positive": 0.8148148148148148
+    },
+    "is_new_asn": {
+      "correct": 0.29411764705882354,
+      "false_negative": 0.375,
+      "false_positive": 0.9259259259259259
+    },
+    "is_new_browser": {
+      "correct": 0.43808049535603716,
+      "false_negative": 0.25,
+      "false_positive": 0.7037037037037037
+    },
+    "is_new_os": {
+      "correct": 0.33436532507739936,
+      "false_negative": 0.25,
+      "false_positive": 0.6666666666666666
+    },
+    "is_new_device": {
+      "correct": 0.2502579979360165,
+      "false_negative": 0.25,
+      "false_positive": 0.6666666666666666
+    }
+  },
+  "false_negative_count": 8,
+  "false_positive_count": 27
+}

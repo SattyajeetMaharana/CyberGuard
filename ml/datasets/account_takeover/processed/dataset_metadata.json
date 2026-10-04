@@ -1,0 +1,54 @@
+{
+  "dataset": "RBA Account Takeover",
+  "source_archive": "ml\\datasets\\account_takeover\\raw\\rba-dataset.zip",
+  "random_state": 42,
+  "chunk_size": 250000,
+  "split_strategy": "user_disjoint",
+  "sampling_strategy": "user_level_selection_with_bounded_history",
+  "max_events_per_user": 100,
+  "negative_user_selection": {
+    "method": "deterministic_random_user_sampling",
+    "target_benign_users_per_positive_user": 20
+  },
+  "raw_rows_scanned": 31269264,
+  "splits": {
+    "train": {
+      "rows": 8676,
+      "unique_users": 2037,
+      "positive_ato": 99,
+      "negative_benign": 8577
+    },
+    "validation": {
+      "rows": 2136,
+      "unique_users": 441,
+      "positive_ato": 19,
+      "negative_benign": 2117
+    },
+    "test": {
+      "rows": 1973,
+      "unique_users": 420,
+      "positive_ato": 21,
+      "negative_benign": 1952
+    }
+  },
+  "output_columns": [
+    "Login Timestamp",
+    "User ID",
+    "Country",
+    "Region",
+    "City",
+    "ASN",
+    "Browser Name and Version",
+    "OS Name and Version",
+    "Device Type",
+    "Login Successful",
+    "Is Account Takeover"
+  ],
+  "leakage_policy": {
+    "user_overlap": false,
+    "target_as_feature": false,
+    "ip_as_feature": false,
+    "is_attack_ip_as_feature": false,
+    "future_events_used_for_history": false
+  }
+}
