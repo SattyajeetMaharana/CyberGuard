@@ -1,6 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, Request, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.api.deps import get_db, get_current_user
+from app.db.models.security_context import SecurityContext
 from app.db.session import get_db
 from app.schemas.auth import (
     AuthResponse,
@@ -19,6 +22,7 @@ from app.services.auth_service import (
 )
 from app.services.device_service import register_device
 from app.services.event_service import create_event
+from app.services.login_event_service import record_login_event
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
@@ -34,6 +38,23 @@ def _auth_response(
         token_type="bearer",
         user=user,
     )
+
+
+async def _get_organization_id(
+    db: AsyncSession,
+    *,
+    user_id,
+):
+    result = await db.execute(
+        select(SecurityContext.organization_id).where(
+            SecurityContext.user_id == user_id,
+            SecurityContext.context_type == "ORGANIZATION",
+            SecurityContext.organization_id.is_not(None),
+            SecurityContext.is_active.is_(True),
+        )
+    )
+
+    return result.scalar_one_or_none()
 
 
 @router.post(
@@ -97,12 +118,18 @@ async def login(
             headers={"WWW-Authenticate": "Bearer"},
         )
 
+    organization_id = await _get_organization_id(
+        db=db,
+        user_id=user.id,
+    )
+
     device = None
 
     if payload.device_identifier is not None:
         device = await register_device(
             db=db,
             user_id=user.id,
+            organization_id=organization_id,
             device_identifier=payload.device_identifier,
             device_name=payload.device_name,
             platform=payload.platform,
@@ -112,6 +139,16 @@ async def login(
         db=db,
         user=user,
         device_id=device.id if device else None,
+        ip_address=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+    )
+
+    await record_login_event(
+        db=db,
+        user_id=user.id,
+        organization_id=organization_id,
+        device_id=device.id if device else None,
+        login_success=True,
         ip_address=request.client.host if request.client else None,
         user_agent=request.headers.get("user-agent"),
     )

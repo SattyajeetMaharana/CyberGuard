@@ -9,3 +9,10 @@ from app.db.models.device import Device
 from app.db.models.session import Session
 from app.db.models.event import Event
 from app.db.models.detection import Detection
+from app.db.models.organization import Organization
+from app.db.models.organization_verification import OrganizationVerification
+from app.db.models.department import Department
+from app.db.models.employee import Employee
+from app.db.models.invitation import Invitation
+from app.db.models.security_context_membership import SecurityContextMembership
+from app.db.models.login_event import LoginEvent

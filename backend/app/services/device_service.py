@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from hashlib import sha256
+import hashlib
 from uuid import UUID
 
 from sqlalchemy import select
@@ -9,60 +9,48 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.db.models.device import Device
 
 
-def hash_device_identifier(device_identifier: str) -> str:
-    return sha256(device_identifier.encode("utf-8")).hexdigest()
-
-
-async def get_user_device(
-    db: AsyncSession,
-    *,
-    user_id: UUID,
-    device_identifier: str,
-) -> Device | None:
-    identifier_hash = hash_device_identifier(device_identifier)
-
-    result = await db.execute(
-        select(Device).where(
-            Device.user_id == user_id,
-            Device.device_identifier_hash == identifier_hash,
-        )
-    )
-
-    return result.scalar_one_or_none()
+def _hash_device_identifier(device_identifier: str) -> str:
+    return hashlib.sha256(
+        device_identifier.encode("utf-8")
+    ).hexdigest()
 
 
 async def register_device(
     db: AsyncSession,
     *,
     user_id: UUID,
+    organization_id: UUID | None,
     device_identifier: str,
     device_name: str | None = None,
     platform: str | None = None,
 ) -> Device:
-    identifier_hash = hash_device_identifier(device_identifier)
+    device_identifier_hash = _hash_device_identifier(device_identifier)
 
-    result = await db.execute(
+    existing = await db.scalar(
         select(Device).where(
-            Device.user_id == user_id,
-            Device.device_identifier_hash == identifier_hash,
+            Device.device_identifier_hash == device_identifier_hash,
         )
     )
-    device = result.scalar_one_or_none()
 
-    if device is not None:
-        if device_name is not None:
-            device.device_name = device_name
-        if platform is not None:
-            device.platform = platform
+    if existing is not None:
+        if (
+            existing.user_id != user_id
+            or existing.organization_id != organization_id
+        ):
+            raise ValueError("Device is already registered to another context")
 
-        device.is_active = True
+        existing.device_name = device_name
+        existing.platform = platform
+        existing.is_active = True
+
         await db.commit()
-        await db.refresh(device)
-        return device
+        await db.refresh(existing)
+        return existing
 
     device = Device(
         user_id=user_id,
-        device_identifier_hash=identifier_hash,
+        organization_id=organization_id,
+        device_identifier_hash=device_identifier_hash,
         device_name=device_name,
         platform=platform,
         is_active=True,
@@ -75,21 +63,39 @@ async def register_device(
     return device
 
 
+async def list_user_devices(
+    db: AsyncSession,
+    *,
+    user_id: UUID,
+    organization_id: UUID | None = None,
+) -> list[Device]:
+    result = await db.execute(
+        select(Device)
+        .where(
+            Device.user_id == user_id,
+            Device.organization_id == organization_id,
+        )
+        .order_by(Device.created_at.desc())
+    )
+
+    return list(result.scalars().all())
+
+
 async def set_device_activation(
     db: AsyncSession,
     *,
     user_id: UUID,
     device_id: UUID,
     is_active: bool,
+    organization_id: UUID | None = None,
 ) -> Device | None:
-    result = await db.execute(
+    device = await db.scalar(
         select(Device).where(
             Device.id == device_id,
             Device.user_id == user_id,
+            Device.organization_id == organization_id,
         )
     )
-
-    device = result.scalar_one_or_none()
 
     if device is None:
         return None
@@ -100,17 +106,3 @@ async def set_device_activation(
     await db.refresh(device)
 
     return device
-
-
-async def list_user_devices(
-    db: AsyncSession,
-    *,
-    user_id: UUID,
-) -> list[Device]:
-    result = await db.execute(
-        select(Device)
-        .where(Device.user_id == user_id)
-        .order_by(Device.created_at.desc())
-    )
-
-    return list(result.scalars().all())
