@@ -2,13 +2,39 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
+import { ApiError } from "../services/api";
+import { useAuth } from "../context/AuthContext";
+
+function getLoginErrorMessage(error: unknown): string {
+  if (error instanceof ApiError) {
+    if (error.status === 401) {
+      return "Invalid email or password.";
+    }
+
+    if (error.status >= 500) {
+      return "The CyberGuard server is currently unavailable. Please try again.";
+    }
+
+    return error.message || "Unable to sign in. Please try again.";
+  }
+
+  if (error instanceof TypeError) {
+    return "Unable to connect to CyberGuard. Check your network connection.";
+  }
+
+  return "Something went wrong while signing in. Please try again.";
+}
+
 export default function Login() {
   const navigate = useNavigate();
+  const { login, isAuthenticated } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isEntering, setIsEntering] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     return () => {
@@ -16,28 +42,53 @@ export default function Login() {
     };
   }, []);
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    if (isAuthenticated && !isEntering) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [isAuthenticated, isEntering, navigate]);
+
+  const handleSubmit = async (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
     event.preventDefault();
 
-    if (isEntering) {
+    if (isSubmitting || isEntering) {
       return;
     }
 
-    setIsEntering(true);
-    document.body.classList.add("auth-transition-active");
+    setErrorMessage("");
+    setIsSubmitting(true);
 
-    window.setTimeout(() => {
-      navigate("/dashboard", {
-        state: {
-          fromLogin: true,
-        },
-      });
-    }, 850);
+    try {
+      await login(email.trim(), password);
+
+      setIsEntering(true);
+      document.body.classList.add("auth-transition-active");
+
+      window.setTimeout(() => {
+        navigate("/dashboard", {
+          replace: true,
+          state: {
+            fromLogin: true,
+          },
+        });
+      }, 850);
+    } catch (error) {
+      setErrorMessage(getLoginErrorMessage(error));
+      setIsSubmitting(false);
+    }
   };
+
+  const isBusy = isSubmitting || isEntering;
 
   return (
     <>
-      <div className={`auth-page ${isEntering ? "auth-page-transitioning" : ""}`}>
+      <div
+        className={`auth-page ${
+          isEntering ? "auth-page-transitioning" : ""
+        }`}
+      >
         <div className="auth-container">
           <section className="auth-intro">
             <div className="auth-intro-top">
@@ -60,8 +111,9 @@ export default function Login() {
               </h1>
 
               <p>
-                Sign in to access your organization's cybersecurity workspace,
-                monitor threats, and manage your security environment.
+                Sign in to access your organization's cybersecurity
+                workspace, monitor threats, and manage your security
+                environment.
               </p>
             </div>
 
@@ -97,7 +149,9 @@ export default function Login() {
               </div>
 
               <h2>
-                {isEntering ? "Entering workspace" : "Sign in"}
+                {isEntering
+                  ? "Entering workspace"
+                  : "Sign in"}
               </h2>
 
               <p>
@@ -107,9 +161,25 @@ export default function Login() {
               </p>
             </div>
 
+            {errorMessage && !isEntering && (
+              <div
+                className="auth-error"
+                role="alert"
+              >
+                <span className="auth-error-indicator">
+                  !
+                </span>
+
+                <div>
+                  <strong>Sign-in failed</strong>
+                  <p>{errorMessage}</p>
+                </div>
+              </div>
+            )}
+
             <form
               className={`auth-form ${
-                isEntering ? "auth-form-disabled" : ""
+                isBusy ? "auth-form-disabled" : ""
               }`}
               onSubmit={handleSubmit}
             >
@@ -127,12 +197,16 @@ export default function Login() {
                     id="login-email"
                     type="email"
                     value={email}
-                    onChange={(event) =>
-                      setEmail(event.target.value)
-                    }
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+
+                      if (errorMessage) {
+                        setErrorMessage("");
+                      }
+                    }}
                     placeholder="you@organization.com"
                     autoComplete="email"
-                    disabled={isEntering}
+                    disabled={isBusy}
                     required
                   />
                 </div>
@@ -150,14 +224,20 @@ export default function Login() {
 
                   <input
                     id="login-password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(event) =>
-                      setPassword(event.target.value)
+                    type={
+                      showPassword ? "text" : "password"
                     }
+                    value={password}
+                    onChange={(event) => {
+                      setPassword(event.target.value);
+
+                      if (errorMessage) {
+                        setErrorMessage("");
+                      }
+                    }}
                     placeholder="Enter your password"
                     autoComplete="current-password"
-                    disabled={isEntering}
+                    disabled={isBusy}
                     required
                   />
 
@@ -165,14 +245,16 @@ export default function Login() {
                     type="button"
                     className="auth-password-toggle"
                     onClick={() =>
-                      setShowPassword((current) => !current)
+                      setShowPassword(
+                        (current) => !current,
+                      )
                     }
                     aria-label={
                       showPassword
                         ? "Hide password"
                         : "Show password"
                     }
-                    disabled={isEntering}
+                    disabled={isBusy}
                   >
                     {showPassword ? "HIDE" : "SHOW"}
                   </button>
@@ -182,11 +264,18 @@ export default function Login() {
               <button
                 type="submit"
                 className={`button button-primary auth-submit ${
-                  isEntering ? "auth-submit-loading" : ""
+                  isEntering
+                    ? "auth-submit-loading"
+                    : ""
                 }`}
-                disabled={isEntering}
+                disabled={isBusy}
               >
-                {isEntering ? (
+                {isSubmitting && !isEntering ? (
+                  <>
+                    <span className="auth-submit-loader" />
+                    <span>Authenticating</span>
+                  </>
+                ) : isEntering ? (
                   <>
                     <span className="auth-submit-loader" />
                     <span>Entering Workspace</span>
@@ -200,7 +289,7 @@ export default function Login() {
               </button>
             </form>
 
-            {!isEntering && (
+            {!isBusy && (
               <>
                 <div className="auth-divider">
                   <span />
@@ -229,7 +318,9 @@ export default function Login() {
               <div className="auth-transition-status">
                 <div className="auth-transition-status-line">
                   <span className="auth-transition-pulse" />
-                  <span>SECURE SESSION INITIALIZING</span>
+                  <span>
+                    SECURE SESSION INITIALIZING
+                  </span>
                 </div>
 
                 <div className="auth-transition-progress">
@@ -238,14 +329,18 @@ export default function Login() {
 
                 <div className="auth-transition-meta">
                   <span>CYBERGUARD</span>
-                  <span>AUTH → ORGANIZATION</span>
+                  <span>
+                    AUTH → ORGANIZATION
+                  </span>
                 </div>
               </div>
             )}
 
             <div className="auth-card-footer">
               <span>CYBERGUARD</span>
-              <span>SECURE ORGANIZATIONAL ACCESS</span>
+              <span>
+                SECURE ORGANIZATIONAL ACCESS
+              </span>
             </div>
           </section>
         </div>

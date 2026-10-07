@@ -1,8 +1,9 @@
 export interface User {
   id: string;
-  name: string;
   email: string;
-  role?: string;
+  full_name: string;
+  is_active: boolean;
+  is_verified: boolean;
 }
 
 export interface Organization {

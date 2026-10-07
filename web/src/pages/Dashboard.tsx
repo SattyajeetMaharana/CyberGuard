@@ -1,116 +1,17 @@
-const metrics = [
-  {
-    label: "Cyber Score",
-    value: "78",
-    suffix: "/100",
-    detail: "Current security posture",
-    trend: "+4.2%",
-    trendLabel: "vs last week",
-  },
-  {
-    label: "Active Threats",
-    value: "12",
-    suffix: "",
-    detail: "Threats requiring attention",
-    trend: "03",
-    trendLabel: "high priority",
-  },
-  {
-    label: "Open Incidents",
-    value: "04",
-    suffix: "",
-    detail: "Incidents under response",
-    trend: "01",
-    trendLabel: "critical",
-  },
-  {
-    label: "Protected Devices",
-    value: "128",
-    suffix: "",
-    detail: "Managed organization devices",
-    trend: "96%",
-    trendLabel: "coverage",
-  },
-];
+import { Link } from "react-router-dom";
 
-const threatLevels = [
-  {
-    label: "Critical",
-    value: 2,
-    percentage: 17,
-  },
-  {
-    label: "High",
-    value: 4,
-    percentage: 33,
-  },
-  {
-    label: "Medium",
-    value: 6,
-    percentage: 50,
-  },
-];
-
-const departments = [
-  {
-    name: "Engineering",
-    score: 84,
-    status: "Stable",
-  },
-  {
-    name: "Operations",
-    score: 76,
-    status: "Monitor",
-  },
-  {
-    name: "Finance",
-    score: 69,
-    status: "Attention",
-  },
-  {
-    name: "Human Resources",
-    score: 88,
-    status: "Stable",
-  },
-];
-
-const activity = [
-  {
-    time: "10:42 AM",
-    event: "Suspicious URL detected",
-    source: "Web Analysis",
-    status: "High",
-  },
-  {
-    time: "09:18 AM",
-    event: "New device registered",
-    source: "Device Monitoring",
-    status: "Safe",
-  },
-  {
-    time: "08:51 AM",
-    event: "Security policy updated",
-    source: "Organization",
-    status: "Info",
-  },
-  {
-    time: "08:24 AM",
-    event: "Potential phishing attempt",
-    source: "Threat Detection",
-    status: "Critical",
-  },
-];
+import { useAuth } from "../context/AuthContext";
 
 const quickActions = [
   {
     label: "Threat Center",
-    description: "Review active threats",
+    description: "Review active security threats",
     path: "/threats",
     icon: "◈",
   },
   {
     label: "Incidents",
-    description: "Manage open incidents",
+    description: "Manage security incidents",
     path: "/incidents",
     icon: "◇",
   },
@@ -121,14 +22,27 @@ const quickActions = [
     icon: "◉",
   },
   {
-    label: "Devices",
-    description: "Monitor organization devices",
-    path: "/devices",
-    icon: "▣",
+    label: "Settings",
+    description: "Manage your security preferences",
+    path: "/settings",
+    icon: "⚙",
   },
 ];
 
 export default function Dashboard() {
+  const { user } = useAuth();
+
+  const displayName =
+    user?.full_name?.trim() || "Organization User";
+
+  const accountStatus = user?.is_active
+    ? "ACTIVE"
+    : "INACTIVE";
+
+  const verificationStatus = user?.is_verified
+    ? "VERIFIED"
+    : "UNVERIFIED";
+
   return (
     <div className="dashboard-page">
       <section className="dashboard-heading">
@@ -137,181 +51,259 @@ export default function Dashboard() {
             SECURITY COMMAND CENTER
           </span>
 
-          <h1>Organization Overview</h1>
+          <h1>Welcome, {displayName}</h1>
 
           <p>
-            Monitor your organization's cybersecurity posture, active threats,
-            incidents, and security activity from one centralized workspace.
+            Monitor your organization's cybersecurity
+            posture and access security analysis from one
+            centralized workspace.
           </p>
         </div>
 
         <div className="dashboard-status-block">
           <span className="dashboard-status-indicator">
             <span />
-            MONITORING ACTIVE
+            SESSION ACTIVE
           </span>
 
-          <strong>Security operations online</strong>
+          <strong>Secure workspace online</strong>
 
-          <span>Last updated just now</span>
+          <span>
+            {user?.email ?? "Authenticated user"}
+          </span>
         </div>
       </section>
 
       <section className="dashboard-metrics">
-        {metrics.map((metric) => (
-          <article
-            className="dashboard-metric-card"
-            key={metric.label}
-          >
-            <div className="dashboard-metric-top">
-              <span>{metric.label}</span>
+        <article className="dashboard-metric-card">
+          <div className="dashboard-metric-top">
+            <span>Cyber Score</span>
 
-              <span className="dashboard-metric-arrow">
-                ↗
-              </span>
-            </div>
-
-            <div className="dashboard-metric-value">
-              <strong>{metric.value}</strong>
-
-              {metric.suffix && (
-                <small>{metric.suffix}</small>
-              )}
-            </div>
-
-            <div className="dashboard-metric-bottom">
-              <span>{metric.detail}</span>
-
-              <span>
-                <strong>{metric.trend}</strong>{" "}
-                {metric.trendLabel}
-              </span>
-            </div>
-          </article>
-        ))}
-      </section>
-
-      <section className="dashboard-command-grid">
-        <article className="dashboard-panel dashboard-threat-panel">
-          <div className="dashboard-panel-header">
-            <div>
-              <span>THREAT CENTER</span>
-              <h2>Threat distribution</h2>
-            </div>
-
-            <span className="dashboard-panel-period">
-              TODAY
+            <span className="dashboard-metric-arrow">
+              ↗
             </span>
           </div>
 
-          <div className="dashboard-threat-content">
-            <div className="dashboard-threat-total">
-              <strong>12</strong>
-              <span>ACTIVE THREATS</span>
-            </div>
+          <div className="dashboard-metric-value">
+            <strong>—</strong>
+            <small>/100</small>
+          </div>
 
-            <div className="dashboard-threat-levels">
-              {threatLevels.map((threat) => (
-                <div
-                  className="dashboard-threat-level"
-                  key={threat.label}
-                >
-                  <div className="dashboard-threat-level-heading">
-                    <span>{threat.label}</span>
-                    <strong>{threat.value}</strong>
-                  </div>
+          <div className="dashboard-metric-bottom">
+            <span>Backend score</span>
 
-                  <div className="dashboard-threat-bar">
-                    <span
-                      style={{
-                        width: `${threat.percentage}%`,
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+            <span>
+              <strong>UNAVAILABLE</strong>
+            </span>
           </div>
         </article>
 
-        <article className="dashboard-panel dashboard-score-panel">
+        <article className="dashboard-metric-card">
+          <div className="dashboard-metric-top">
+            <span>Account</span>
+
+            <span className="dashboard-metric-arrow">
+              ↗
+            </span>
+          </div>
+
+          <div className="dashboard-metric-value">
+            <strong>01</strong>
+          </div>
+
+          <div className="dashboard-metric-bottom">
+            <span>Authenticated user</span>
+
+            <span>
+              <strong>{accountStatus}</strong>
+            </span>
+          </div>
+        </article>
+
+        <article className="dashboard-metric-card">
+          <div className="dashboard-metric-top">
+            <span>Verification</span>
+
+            <span className="dashboard-metric-arrow">
+              ↗
+            </span>
+          </div>
+
+          <div className="dashboard-metric-value">
+            <strong>
+              {user?.is_verified ? "YES" : "NO"}
+            </strong>
+          </div>
+
+          <div className="dashboard-metric-bottom">
+            <span>Organization account</span>
+
+            <span>
+              <strong>{verificationStatus}</strong>
+            </span>
+          </div>
+        </article>
+
+        <article className="dashboard-metric-card">
+          <div className="dashboard-metric-top">
+            <span>Security</span>
+
+            <span className="dashboard-metric-arrow">
+              ↗
+            </span>
+          </div>
+
+          <div className="dashboard-metric-value">
+            <strong>READY</strong>
+          </div>
+
+          <div className="dashboard-metric-bottom">
+            <span>Security workspace</span>
+
+            <span>
+              <strong>ONLINE</strong>
+            </span>
+          </div>
+        </article>
+      </section>
+
+      <section className="dashboard-command-grid">
+        <article
+          className="dashboard-panel dashboard-score-panel"
+          id="security-context"
+        >
           <div className="dashboard-panel-header">
             <div>
-              <span>CYBER SCORE</span>
-              <h2>Security posture</h2>
+              <span>SECURITY CONTEXT</span>
+              <h2>Current security posture</h2>
             </div>
 
             <span className="dashboard-panel-period">
-              / 100
+              LIVE
             </span>
           </div>
 
           <div className="dashboard-score-content">
             <div className="dashboard-score-circle">
-              <strong>78</strong>
-              <span>SECURE</span>
+              <strong>—</strong>
+              <span>API</span>
             </div>
 
             <div className="dashboard-score-details">
-              <span>CURRENT SCORE</span>
+              <span>CYBER SCORE</span>
 
-              <strong>Good security posture</strong>
+              <strong>
+                Waiting for backend score
+              </strong>
 
               <p>
-                Your organization's security posture is being monitored
-                across available security signals.
+                CyberGuard displays the authoritative
+                security score supplied by the backend.
+                The web application does not calculate or
+                estimate this value.
               </p>
 
-              <a href="/cyber-score">
-                View full analysis
+              <Link to="/cyber-score">
+                View score analysis
                 <span>↗</span>
-              </a>
+              </Link>
+            </div>
+          </div>
+        </article>
+
+        <article
+          className="dashboard-panel dashboard-threat-panel"
+          id="security-overview"
+        >
+          <div className="dashboard-panel-header">
+            <div>
+              <span>SECURITY OVERVIEW</span>
+              <h2>Security operations</h2>
+            </div>
+
+            <span className="dashboard-panel-period">
+              READY
+            </span>
+          </div>
+
+          <div className="dashboard-threat-content">
+            <div className="dashboard-threat-total">
+              <strong>03</strong>
+              <span>SECURITY MODULES</span>
+            </div>
+
+            <div className="dashboard-score-details">
+              <span>THREAT MANAGEMENT</span>
+
+              <strong>
+                Security modules are ready
+              </strong>
+
+              <p>
+                Threat Center, incident management and
+                Cyber Score modules are available through
+                the security navigation.
+              </p>
+
+              <Link to="/threats">
+                Open Threat Center
+                <span>↗</span>
+              </Link>
             </div>
           </div>
         </article>
       </section>
 
       <section className="dashboard-analysis-grid">
-        <article className="dashboard-panel dashboard-department-panel">
+        <article className="dashboard-panel dashboard-activity-panel">
           <div className="dashboard-panel-header">
             <div>
-              <span>ORGANIZATION RISK</span>
-              <h2>Department posture</h2>
+              <span>ACCOUNT CONTEXT</span>
+              <h2>Authenticated identity</h2>
             </div>
 
             <span className="dashboard-panel-period">
-              04 UNITS
+              CURRENT
             </span>
           </div>
 
-          <div className="dashboard-department-list">
-            {departments.map((department) => (
-              <div
-                className="dashboard-department-row"
-                key={department.name}
-              >
-                <div className="dashboard-department-name">
-                  <strong>{department.name}</strong>
-                  <span>{department.status}</span>
-                </div>
+          <div className="dashboard-activity-list">
+            <div className="dashboard-activity-row">
+              <span className="dashboard-activity-time">
+                USER
+              </span>
 
-                <div className="dashboard-department-bar">
-                  <span
-                    style={{
-                      width: `${department.score}%`,
-                    }}
-                  />
-                </div>
-
-                <strong className="dashboard-department-score">
-                  {department.score}
-                </strong>
+              <div className="dashboard-activity-event">
+                <strong>{displayName}</strong>
+                <span>{user?.email}</span>
               </div>
-            ))}
+
+              <span className="dashboard-activity-status status-safe">
+                {accountStatus}
+              </span>
+            </div>
+
+            <div className="dashboard-activity-row">
+              <span className="dashboard-activity-time">
+                ACCOUNT
+              </span>
+
+              <div className="dashboard-activity-event">
+                <strong>Verification status</strong>
+
+                <span>
+                  Backend authentication state
+                </span>
+              </div>
+
+              <span className="dashboard-activity-status status-info">
+                {verificationStatus}
+              </span>
+            </div>
           </div>
         </article>
 
-        <article className="dashboard-panel dashboard-activity-panel">
+        <article className="dashboard-panel dashboard-department-panel">
           <div className="dashboard-panel-header">
             <div>
               <span>SECURITY ACTIVITY</span>
@@ -319,32 +311,52 @@ export default function Dashboard() {
             </div>
 
             <span className="dashboard-panel-period">
-              LATEST
+              API
             </span>
           </div>
 
-          <div className="dashboard-activity-list">
-            {activity.map((item) => (
-              <div
-                className="dashboard-activity-row"
-                key={`${item.time}-${item.event}`}
-              >
-                <span className="dashboard-activity-time">
-                  {item.time}
-                </span>
+          <div className="dashboard-department-list">
+            <div className="dashboard-department-row">
+              <div className="dashboard-department-name">
+                <strong>Activity API</strong>
 
-                <div className="dashboard-activity-event">
-                  <strong>{item.event}</strong>
-                  <span>{item.source}</span>
-                </div>
-
-                <span
-                  className={`dashboard-activity-status status-${item.status.toLowerCase()}`}
-                >
-                  {item.status}
+                <span>
+                  No activity endpoint connected
                 </span>
               </div>
-            ))}
+
+              <strong className="dashboard-department-score">
+                —
+              </strong>
+            </div>
+
+            <div className="dashboard-department-row">
+              <div className="dashboard-department-name">
+                <strong>Threat data</strong>
+
+                <span>
+                  Backend integration pending
+                </span>
+              </div>
+
+              <strong className="dashboard-department-score">
+                —
+              </strong>
+            </div>
+
+            <div className="dashboard-department-row">
+              <div className="dashboard-department-name">
+                <strong>Incident data</strong>
+
+                <span>
+                  Backend integration pending
+                </span>
+              </div>
+
+              <strong className="dashboard-department-score">
+                —
+              </strong>
+            </div>
           </div>
         </article>
       </section>
@@ -364,9 +376,9 @@ export default function Dashboard() {
 
         <div className="dashboard-quick-grid">
           {quickActions.map((action) => (
-            <a
+            <Link
               className="dashboard-quick-card"
-              href={action.path}
+              to={action.path}
               key={action.path}
             >
               <span className="dashboard-quick-icon">
@@ -384,7 +396,7 @@ export default function Dashboard() {
               >
                 ↗
               </span>
-            </a>
+            </Link>
           ))}
         </div>
       </section>

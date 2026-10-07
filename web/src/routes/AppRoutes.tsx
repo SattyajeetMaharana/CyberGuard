@@ -1,8 +1,10 @@
-import { Routes, Route } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 
 import PublicLayout from "../layouts/PublicLayout";
 import AuthenticatedLayout from "../layouts/AuthenticatedLayout";
 import PageTransition from "../components/PageTransition";
+
+import { useAuth } from "../context/AuthContext";
 
 import Home from "../pages/Home";
 import Features from "../pages/Features";
@@ -21,9 +23,45 @@ import Devices from "../pages/Devices";
 import Policies from "../pages/Policies";
 import Settings from "../pages/Settings";
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  // Authentication logic will be implemented in the functional phase.
-  return children;
+function ProtectedRoute({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <section className="auth-loading-page">
+        <div className="auth-loading-content">
+          <span className="organization-placeholder-label">
+            CyberGuard
+          </span>
+
+          <h1>Restoring secure session</h1>
+
+          <p>
+            Please wait while we verify your
+            authentication session.
+          </p>
+        </div>
+      </section>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <Navigate
+        to="/login"
+        replace
+        state={{
+          from: window.location.pathname,
+        }}
+      />
+    );
+  }
+
+  return <>{children}</>;
 }
 
 function NotFound() {
@@ -122,7 +160,7 @@ export default function AppRoutes() {
       />
 
       {/* ================================
-          Organization Routes
+          Protected Organization Routes
           ================================ */}
 
       <Route

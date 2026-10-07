@@ -1,4 +1,4 @@
-/* =========================================
+﻿/* =========================================
    CyberGuard App Foundation
    ========================================= */
 
@@ -295,7 +295,7 @@
 
 
 /* =========================================
-   Header — Tablet
+   Header â€” Tablet
    ========================================= */
 
 @media (max-width: 1000px) {
@@ -319,7 +319,7 @@
 
 
 /* =========================================
-   Header — Mobile
+   Header â€” Mobile
    ========================================= */
 
 @media (max-width: 760px) {
@@ -470,7 +470,7 @@
 
 
 /* =========================================
-   Footer — Mobile
+   Footer â€” Mobile
    ========================================= */
 
 @media (max-width: 700px) {
@@ -807,7 +807,7 @@
 
 
 /* =========================================
-   Sidebar — Tablet
+   Sidebar â€” Tablet
    ========================================= */
 
 @media (max-width: 900px) {
@@ -822,7 +822,7 @@
 
 
 /* =========================================
-   Sidebar — Mobile
+   Sidebar â€” Mobile
    ========================================= */
 
 /* =========================================
@@ -965,7 +965,7 @@
 
 
 /* =========================================
-   Authenticated Layout — Mobile
+   Authenticated Layout â€” Mobile
    ========================================= */
 
 @media (max-width: 760px) {
@@ -6436,7 +6436,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.13.5 — PUBLIC RESPONSIVE POLISH
+   0.6.13.5 â€” PUBLIC RESPONSIVE POLISH
    ========================================================= */
 
 /* ---------------------------------------------------------
@@ -6938,7 +6938,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.14 — ADMIN NAVIGATION REDESIGN
+   0.6.14 â€” ADMIN NAVIGATION REDESIGN
    ========================================================= */
 
 .authenticated-layout {
@@ -7488,7 +7488,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.15.2 — SECURITY OVERVIEW METRICS
+   0.6.15.2 â€” SECURITY OVERVIEW METRICS
    ========================================================= */
 
 .dashboard-metrics {
@@ -7709,7 +7709,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.15.3 — CYBER SCORE VISUALIZATION
+   0.6.15.3 â€” CYBER SCORE VISUALIZATION
    ========================================================= */
 
 .dashboard-score-panel {
@@ -7929,7 +7929,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.15.4 — THREAT ACTIVITY VISUALIZATION
+   0.6.15.4 â€” THREAT ACTIVITY VISUALIZATION
    ========================================================= */
 
 .dashboard-threat-panel {
@@ -8159,7 +8159,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.15.5 — ORGANIZATION RISK PANELS
+   0.6.15.5 â€” ORGANIZATION RISK PANELS
    ========================================================= */
 
 .dashboard-department-panel {
@@ -8359,7 +8359,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.15.7 — QUICK SECURITY ACTIONS
+   0.6.15.7 â€” QUICK SECURITY ACTIONS
    ========================================================= */
 
 .dashboard-quick-section {
@@ -8531,7 +8531,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.15.8 — DASHBOARD RESPONSIVE SYSTEM
+   0.6.15.8 â€” DASHBOARD RESPONSIVE SYSTEM
    ========================================================= */
 
 .dashboard-page {
@@ -8763,7 +8763,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.16.2 — DEPARTMENT SUMMARY METRICS
+   0.6.16.2 â€” DEPARTMENT SUMMARY METRICS
    ========================================================= */
 
 .departments-page {
@@ -8951,7 +8951,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.16.3 — DEPARTMENT SECURITY ANALYTICS
+   0.6.16.3 â€” DEPARTMENT SECURITY ANALYTICS
    ========================================================= */
 
 .departments-analytics-grid {
@@ -9282,7 +9282,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.16.4 — DEPARTMENT DIRECTORY REDESIGN
+   0.6.16.4 â€” DEPARTMENT DIRECTORY REDESIGN
    ========================================================= */
 
 .department-directory-panel {
@@ -9582,7 +9582,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.16.5 — DEPARTMENT RISK VISUALIZATION
+   0.6.16.5 â€” DEPARTMENT RISK VISUALIZATION
    ========================================================= */
 
 .department-score {
@@ -9737,7 +9737,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.16.6 — DEPARTMENT INTERACTIONS
+   0.6.16.6 â€” DEPARTMENT INTERACTIONS
    ========================================================= */
 
 .department-review-item {
@@ -10016,7 +10016,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.16.7 — DEPARTMENT RESPONSIVE DESIGN
+   0.6.16.7 â€” DEPARTMENT RESPONSIVE DESIGN
    ========================================================= */
 
 /* Large tablet / smaller desktop */
@@ -10375,7 +10375,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.17 — EMPLOYEE RISK UI
+   0.6.17 â€” EMPLOYEE RISK UI
    ========================================================= */
 
 .employees-page {
@@ -11077,7 +11077,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.17.3 — EMPLOYEE SUMMARY METRICS
+   0.6.17.3 â€” EMPLOYEE SUMMARY METRICS
    ========================================================= */
 
 .employee-stat-grid {
@@ -11290,7 +11290,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.17.4 — EMPLOYEE RISK VISUALIZATION
+   0.6.17.4 â€” EMPLOYEE RISK VISUALIZATION
    ========================================================= */
 
 .employee-risk-panel {
@@ -11552,7 +11552,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.17.5 — EMPLOYEE DIRECTORY REDESIGN
+   0.6.17.5 â€” EMPLOYEE DIRECTORY REDESIGN
    ========================================================= */
 
 .employee-directory-panel {
@@ -12027,7 +12027,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.17.6 — EMPLOYEE INTERACTIONS
+   0.6.17.6 â€” EMPLOYEE INTERACTIONS
    ========================================================= */
 
 .employee-attention-item:focus-visible,
@@ -12235,7 +12235,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.17.7 — EMPLOYEE RESPONSIVE DESIGN
+   0.6.17.7 â€” EMPLOYEE RESPONSIVE DESIGN
    ========================================================= */
 
 /* =========================================================
@@ -12666,7 +12666,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.18.3 — DEVICE RISK ANALYTICS
+   0.6.18.3 â€” DEVICE RISK ANALYTICS
    ========================================================= */
 
 .devices-risk-analytics {
@@ -13035,7 +13035,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.18.4 — LOGIN ACTIVITY MONITORING
+   0.6.18.4 â€” LOGIN ACTIVITY MONITORING
    ========================================================= */
 
 .device-login-panel {
@@ -13440,7 +13440,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.18.5 — DEVICE DIRECTORY REDESIGN
+   0.6.18.5 â€” DEVICE DIRECTORY REDESIGN
    ========================================================= */
 
 .device-directory-panel {
@@ -13991,7 +13991,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.18.6 — DEVICE DETAIL PANEL
+   0.6.18.6 â€” DEVICE DETAIL PANEL
    ========================================================= */
 
 .device-detail-modal {
@@ -14335,7 +14335,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.19 — THREAT VOTING UI
+   0.6.19 â€” THREAT VOTING UI
    Responsive threat rows + voting panel
    ========================================================= */
 
@@ -14951,7 +14951,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   0.6.20 — LOGIN → ORGANIZATION TRANSITION
+   0.6.20 â€” LOGIN â†’ ORGANIZATION TRANSITION
    ========================================================= */
 
 .auth-page {
@@ -15373,7 +15373,7 @@ a:focus-visible {
   }
 }
 /* =========================================================
-   DEVICES PAGE — ANALYTICS / POSTURE / PLATFORM
+   DEVICES PAGE â€” ANALYTICS / POSTURE / PLATFORM
 ========================================================= */
 
 .devices-risk-analytics {
